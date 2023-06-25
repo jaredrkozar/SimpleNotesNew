@@ -35,6 +35,7 @@
 		028F5F192A1DB2C2009CBF44 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F182A1DB2C2009CBF44 /* SliderCell.swift */; };
 		028F5F1B2A1E7396009CBF44 /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F1A2A1E7396009CBF44 /* ToggleCell.swift */; };
 		028F5F1D2A1E749E009CBF44 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F1C2A1E749E009CBF44 /* CustomCell.swift */; };
+		02D3D0632A48D6DE00A3BB13 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0622A48D6DE00A3BB13 /* Color.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		028F5F182A1DB2C2009CBF44 /* SliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		028F5F1A2A1E7396009CBF44 /* ToggleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
 		028F5F1C2A1E749E009CBF44 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		02D3D0622A48D6DE00A3BB13 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +154,7 @@
 				028F5F0A2A19843F009CBF44 /* ButtonStyles.swift */,
 				028F5F0C2A19847D009CBF44 /* SettingsModels.swift */,
 				028F5F122A1BDEB5009CBF44 /* SymbolsData.swift */,
+				02D3D0642A48D6E200A3BB13 /* Extensions */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -169,6 +172,14 @@
 				028F5F1C2A1E749E009CBF44 /* CustomCell.swift */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		02D3D0642A48D6E200A3BB13 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				02D3D0622A48D6DE00A3BB13 /* Color.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,6 +269,7 @@
 				028F5F022A19835E009CBF44 /* NewTagView.swift in Sources */,
 				028F5F1D2A1E749E009CBF44 /* CustomCell.swift in Sources */,
 				028F5F052A198390009CBF44 /* TextCell.swift in Sources */,
+				02D3D0632A48D6DE00A3BB13 /* Color.swift in Sources */,
 				028F5F0D2A19847D009CBF44 /* SettingsModels.swift in Sources */,
 				028F5EE72A18872E009CBF44 /* NoteListView.swift in Sources */,
 				028F5EE92A188796009CBF44 /* TagListView.swift in Sources */,

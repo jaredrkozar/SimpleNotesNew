@@ -14,14 +14,14 @@ struct ColorPickerCell: View, SettingsItem {
         return true
     }
     
-    @Binding var currentValue: Int
-    @State var tappedAction: ((Int) -> Void)
+    @Binding var currentValue: Color
+    @State var tappedAction: ((Color) -> Void)
     
     var body: some View {
         ScrollView(.horizontal) {
             HStack {
-                ForEach(Array(ThemeColors.allCases.enumerated()), id: \.element) { index, color in
-                    ColorCell(color: color.tintColor, text: color.themeName, index: index, currentValue: $currentValue, tappedAction: tappedAction)
+                ForEach(colors) { color in
+                    ColorCell(color: color, currentValue: $currentValue, tappedAction: tappedAction)
                 }
             }
         }
@@ -30,24 +30,22 @@ struct ColorPickerCell: View, SettingsItem {
 }
 
 private struct ColorCell: View {
-    @State var color: Color
-    @State var text: String
-    @State var index: Int
-    @Binding var currentValue: Int
-    @State var tappedAction: ((Int) -> Void)
+    @State var color: ThemeColors
+    @Binding var currentValue: Color
+    @State var tappedAction: ((Color) -> Void)
     
     var body: some View {
         Button(action: {
-            currentValue = index
+            currentValue = color.color
             tappedAction(currentValue)
         }) {
             ZStack {
                 VStack {
                     Circle()
-                        .fill(color)
+                        .fill(color.color)
                         .frame(width: 30, height: 30)
                     
-                    Text(text)
+                    Text(color.colorName)
                         .frame(width: 80, height: 60)
                         .foregroundColor(Color.secondary)
                         .lineLimit(2)
@@ -59,7 +57,7 @@ private struct ColorCell: View {
         
         .overlay(
             RoundedRectangle(cornerRadius: 15)
-                .stroke(color, lineWidth:  index == currentValue ? 4.0 : 0.0)
+                .stroke(color.color, lineWidth: currentValue.toHex() == color.color.toHex() ? 4.0 : 0.0)
         )
         .buttonStyle(BaseButtonStyle())
         

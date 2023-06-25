@@ -8,11 +8,8 @@
 import SwiftUI
 
 struct NewTagView: View {
-    @AppStorage("tagtTintColor") var tagtTintColor: Int = 1
     
-    @State var tagName: String = ""
-    @State var selectedIconName: String = "folder"
-    @State var tagColor: Int = 1
+    @StateObject var tagProperties = CurrentTagProperties()
     
     @Environment(\.tintColor) var tintColor
     var body: some View {
@@ -20,9 +17,9 @@ struct NewTagView: View {
         NavigationView {
             SettingsPage {
                 SettingsSectionView {
-                    TextCell(currentValue: $tagName, placeholder: "Enter tag name", leftText: "Tag name")
-                    LinkCell(title: "Select Icon", destination: SelectTagIconView(selectedIconName: $selectedIconName, iconColor: ThemeColors(rawValue: tagColor)!.tintColor))
-                    ColorPickerCell(currentValue: $tagColor, tappedAction: {_ in })
+                    TextCell(currentValue: $tagProperties.tagName, placeholder: "Enter tag name", leftText: "Tag name")
+                    LinkCell(title: "Select Icon", destination: SelectTagIconView(properties: tagProperties))
+                    ColorPickerCell(currentValue: $tagProperties.color.color, tappedAction: {_ in })
                 }
             }
             .toolbar {
@@ -36,13 +33,13 @@ struct NewTagView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                       saveNewTag(name: tagName, symbol: selectedIconName, color: tagColor)
+                    print("DLDL")
                     }) {
                        Text("Save")
                     }
                 }
             }
-            .accentColor(ThemeColors(rawValue: tagColor)?.tintColor)
+            .accentColor(tagProperties.color.color)
         }
     }
 }
@@ -53,4 +50,10 @@ struct NewView: View {
             Text("D<D<D<<D<D<D")
         }
     }
+}
+
+class CurrentTagProperties: ObservableObject {
+    @Published var tagName: String = ""
+    @Published var color: ThemeColors = colors.first!
+    @Published var iconName: String = "mic"
 }
