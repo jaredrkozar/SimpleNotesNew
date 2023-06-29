@@ -8,9 +8,19 @@
 import SwiftUI
 
 struct NoteListView: View {
-    @State var currentTag: String?
-    @FetchRequest(fetchRequest: Note.makeFetchRequest(), animation: .default) var notes: FetchedResults<Note>
-    @Environment(\.managedObjectContext) var managedObjectContext
+    @State private var currentTag: String?
+    var request: FetchRequest<Note>
+    var notes: FetchedResults<Note>{ request.wrappedValue }
+    
+    @Environment(\.managedObjectContext) private var managedObjectContext
+    
+    init(currentTag: String? = nil) {
+        var predicate: NSPredicate? = nil
+        if currentTag != nil {
+            predicate = NSPredicate(format: "tag.tagName CONTAINS[c] %@", currentTag!)
+        }
+        self.request = FetchRequest<Note>(sortDescriptors: [], predicate: predicate)
+    }
     
     var body: some View {
        NavigationStack {

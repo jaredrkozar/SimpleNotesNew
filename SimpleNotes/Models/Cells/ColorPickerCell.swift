@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ColorPickerCell: View, SettingsItem {
     static func == (lhs: ColorPickerCell, rhs: ColorPickerCell) -> Bool {
         return true

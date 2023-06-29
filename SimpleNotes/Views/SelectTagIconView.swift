@@ -29,6 +29,7 @@ struct SelectTagIconView: View {
                 }
             }
         }
+        .accentColor(properties.tagColor)
         .searchable(text: $searchText)
     }
 }
@@ -39,17 +40,17 @@ struct SymbolCell: View {
     
     var body: some View {
         Button {
-            properties.iconName = currentSymbol
+            properties.tagIconName = currentSymbol
         } label: {
             Image(systemName: currentSymbol)
                 .font(.system(size: 45, weight: .medium))
                 .padding(15)
         }
-        .cornerRadius(0.2)
+        .cornerRadius(15.0)
         .overlay(
             RoundedRectangle(cornerRadius: 15)
-                .stroke(properties.color.color, lineWidth: properties.iconName == currentSymbol ? 4.0 : 0.0)
-                .background(properties.iconName == currentSymbol ? properties.color.color.opacity(0.25) : .clear)
+                .stroke(properties.tagColor, lineWidth: properties.tagIconName == currentSymbol ? 4.0 : 0.0)
+                .background(properties.tagIconName == currentSymbol ? properties.tagColor.opacity(0.25) : .clear)
         )
     }
 }

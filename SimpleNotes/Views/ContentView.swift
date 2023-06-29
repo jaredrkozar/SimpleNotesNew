@@ -19,7 +19,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("Tags", systemImage: "tag")
                 }
-            TagListView()
+            SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }

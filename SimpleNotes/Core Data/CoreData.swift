@@ -31,12 +31,12 @@ class CoreDataManager: ObservableObject {
     }
 }
 
-func saveNewTag(name: String, symbol: String, color: Int) {
+func saveNewTag(properties: CurrentTagProperties) {
   
     let newTag = Tag(context: CoreDataManager().context)
-    newTag.symbolName = symbol
-    newTag.tagName = name
-    newTag.color = 2
+    newTag.symbolName = properties.tagIconName
+    newTag.tagName = properties.tagName
+    newTag.color = properties.tagColor.toHex()
     newTag.note = nil
     do {
         if CoreDataManager().context.hasChanges {

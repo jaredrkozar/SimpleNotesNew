@@ -7,8 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		022492632A36CC2600C936BE /* Tag+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022492612A36CC2600C936BE /* Tag+CoreDataClass.swift */; };
-		022492642A36CC2600C936BE /* Tag+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022492622A36CC2600C936BE /* Tag+CoreDataProperties.swift */; };
+		020A78852A4D1B7E00DB2041 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020A78842A4D1B7D00DB2041 /* SettingsView.swift */; };
 		028F5ED92A188715009CBF44 /* SimpleNotesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5ED82A188715009CBF44 /* SimpleNotesApp.swift */; };
 		028F5EDB2A188715009CBF44 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5EDA2A188715009CBF44 /* ContentView.swift */; };
 		028F5EDD2A188716009CBF44 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 028F5EDC2A188716009CBF44 /* Assets.xcassets */; };
@@ -36,11 +35,12 @@
 		028F5F1B2A1E7396009CBF44 /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F1A2A1E7396009CBF44 /* ToggleCell.swift */; };
 		028F5F1D2A1E749E009CBF44 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F1C2A1E749E009CBF44 /* CustomCell.swift */; };
 		02D3D0632A48D6DE00A3BB13 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0622A48D6DE00A3BB13 /* Color.swift */; };
+		02D3D0672A49337600A3BB13 /* Tag+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */; };
+		02D3D0682A49337600A3BB13 /* Tag+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		022492612A36CC2600C936BE /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
-		022492622A36CC2600C936BE /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		020A78842A4D1B7D00DB2041 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		028F5ED52A188715009CBF44 /* SimpleNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		028F5ED82A188715009CBF44 /* SimpleNotesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleNotesApp.swift; sourceTree = "<group>"; };
 		028F5EDA2A188715009CBF44 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -69,6 +69,8 @@
 		028F5F1A2A1E7396009CBF44 /* ToggleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
 		028F5F1C2A1E749E009CBF44 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		02D3D0622A48D6DE00A3BB13 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,8 +125,8 @@
 		028F5EEA2A1930B9009CBF44 /* Core Data */ = {
 			isa = PBXGroup;
 			children = (
-				022492612A36CC2600C936BE /* Tag+CoreDataClass.swift */,
-				022492622A36CC2600C936BE /* Tag+CoreDataProperties.swift */,
+				02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */,
+				02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */,
 				028F5EF02A1931F5009CBF44 /* Note+CoreDataClass.swift */,
 				028F5EF12A1931F5009CBF44 /* Note+CoreDataProperties.swift */,
 				028F5EEB2A1930C8009CBF44 /* CoreData.swift */,
@@ -142,6 +144,7 @@
 				028F5F012A19835E009CBF44 /* NewTagView.swift */,
 				028F5EFB2A193C3F009CBF44 /* NoteView.swift */,
 				028F5F102A1AC505009CBF44 /* SelectTagIconView.swift */,
+				020A78842A4D1B7D00DB2041 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -252,8 +255,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				022492642A36CC2600C936BE /* Tag+CoreDataProperties.swift in Sources */,
-				022492632A36CC2600C936BE /* Tag+CoreDataClass.swift in Sources */,
 				028F5EF92A193A5A009CBF44 /* AppDelegate.swift in Sources */,
 				028F5EDB2A188715009CBF44 /* ContentView.swift in Sources */,
 				028F5EFC2A193C3F009CBF44 /* NoteView.swift in Sources */,
@@ -262,6 +263,8 @@
 				028F5EF42A1931F5009CBF44 /* Note+CoreDataClass.swift in Sources */,
 				028F5EEF2A1930EB009CBF44 /* SimpleNotesDataModel.xcdatamodeld in Sources */,
 				028F5F132A1BDEB5009CBF44 /* SymbolsData.swift in Sources */,
+				02D3D0682A49337600A3BB13 /* Tag+CoreDataProperties.swift in Sources */,
+				02D3D0672A49337600A3BB13 /* Tag+CoreDataClass.swift in Sources */,
 				028F5F112A1AC505009CBF44 /* SelectTagIconView.swift in Sources */,
 				028F5F152A1C6580009CBF44 /* OptionPickerCell.swift in Sources */,
 				028F5F0F2A19C72E009CBF44 /* LinkCell.swift in Sources */,
@@ -273,6 +276,7 @@
 				028F5F0D2A19847D009CBF44 /* SettingsModels.swift in Sources */,
 				028F5EE72A18872E009CBF44 /* NoteListView.swift in Sources */,
 				028F5EE92A188796009CBF44 /* TagListView.swift in Sources */,
+				020A78852A4D1B7E00DB2041 /* SettingsView.swift in Sources */,
 				028F5F0B2A19843F009CBF44 /* ButtonStyles.swift in Sources */,
 				028F5F072A1983C4009CBF44 /* ColorPickerCell.swift in Sources */,
 				028F5F092A1983E1009CBF44 /* ThemeColors.swift in Sources */,

@@ -9,9 +9,10 @@ import SwiftUI
 
 struct NewTagView: View {
     
-    @StateObject var tagProperties = CurrentTagProperties()
+    @StateObject private var tagProperties = CurrentTagProperties()
+    @State var currentTag: Tag?
+    @Environment(\.dismiss) var dismiss
     
-    @Environment(\.tintColor) var tintColor
     var body: some View {
      
         NavigationView {
@@ -19,13 +20,13 @@ struct NewTagView: View {
                 SettingsSectionView {
                     TextCell(currentValue: $tagProperties.tagName, placeholder: "Enter tag name", leftText: "Tag name")
                     LinkCell(title: "Select Icon", destination: SelectTagIconView(properties: tagProperties))
-                    ColorPickerCell(currentValue: $tagProperties.color.color, tappedAction: {_ in })
+                    ColorPickerCell(currentValue: $tagProperties.tagColor, tappedAction: {_ in })
                 }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        print("Cancel")
+                        dismiss()
                     }) {
                        Text("Cancel")
                     }
@@ -33,13 +34,22 @@ struct NewTagView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                    print("DLDL")
+                        currentTag != nil ? currentTag?.saveExistingTag(properties: tagProperties) : saveNewTag(properties: tagProperties)
+                        dismiss()
                     }) {
                        Text("Save")
                     }
                 }
             }
-            .accentColor(tagProperties.color.color)
+            .accentColor(tagProperties.tagColor)
+        }
+        .onAppear {
+            print(currentTag)
+            if currentTag != nil {
+                tagProperties.tagColor = Color(hex: (currentTag?.color)!)!
+                tagProperties.tagName = currentTag!.tagName!
+                tagProperties.tagIconName = currentTag!.symbolName!
+            }
         }
     }
 }
@@ -54,6 +64,6 @@ struct NewView: View {
 
 class CurrentTagProperties: ObservableObject {
     @Published var tagName: String = ""
-    @Published var color: ThemeColors = colors.first!
-    @Published var iconName: String = "mic"
+    @Published var tagColor: Color = .red
+    @Published var tagIconName: String = "mic"
 }
