@@ -12,6 +12,7 @@ struct NewTagView: View {
     @StateObject private var tagProperties = CurrentTagProperties()
     @State var currentTag: Tag?
     @Environment(\.dismiss) var dismiss
+    @Environment(\.managedObjectContext) var context
     
     var body: some View {
      
@@ -34,7 +35,7 @@ struct NewTagView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        currentTag != nil ? currentTag?.saveExistingTag(properties: tagProperties) : saveNewTag(properties: tagProperties)
+                        saveNewTag(properties: tagProperties, context: context, tag: currentTag)
                         dismiss()
                     }) {
                        Text("Save")
@@ -44,7 +45,6 @@ struct NewTagView: View {
             .accentColor(tagProperties.tagColor)
         }
         .onAppear {
-            print(currentTag)
             if currentTag != nil {
                 tagProperties.tagColor = Color(hex: (currentTag?.color)!)!
                 tagProperties.tagName = currentTag!.tagName!
@@ -63,6 +63,7 @@ struct NewView: View {
 }
 
 class CurrentTagProperties: ObservableObject {
+    //not saving because im not alerting the tag directly...need to change this
     @Published var tagName: String = ""
     @Published var tagColor: Color = .red
     @Published var tagIconName: String = "mic"

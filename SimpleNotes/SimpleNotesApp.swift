@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct SimpleNotesApp: App {
-    @StateObject private var dataController = CoreDataManager()
+    @StateObject private var contextManager = PersistenceManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, dataController.context)
+                .environment(\.managedObjectContext, contextManager.context)
             
         }
     }

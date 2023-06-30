@@ -10,7 +10,7 @@ import SwiftUI
 struct TagListView: View {
     @State private var showingNewTagSheet = false
     @FetchRequest(fetchRequest: Tag.makeFetchRequest(), animation: .default) var tags: FetchedResults<Tag>
-    @Environment(\.managedObjectContext) var managedObjectContext
+    @Environment(\.managedObjectContext) var context
     @State private var selectedTag: Tag?
     
     var body: some View {
@@ -22,7 +22,7 @@ struct TagListView: View {
                     TagCell(tag: tag)
                         .swipeActions(edge: .leading) {
                              Button {
-                                selectedTag = tag
+                                 selectedTag = tag
                                  showingNewTagSheet.toggle()
                             } label: {
                                 Label("Edit Tag", systemImage: "tag")
@@ -32,7 +32,7 @@ struct TagListView: View {
                           }
                         .swipeActions(edge: .trailing) {
                              Button {
-                                 tag.deleteTag()
+                                 tag.deleteTag(context: context)
                             } label: {
                                 Label("Delete Tag", systemImage: "trash")
                             }
@@ -48,6 +48,7 @@ struct TagListView: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button {
+                        selectedTag = nil
                         showingNewTagSheet.toggle()
                     } label: {
                         Image(systemName: "plus")
@@ -70,14 +71,16 @@ struct TagListView_Previews: PreviewProvider {
 }
 
 struct TagCell: View {
-    var tag: Tag
+    @ObservedObject var tag: Tag
     
     var body: some View {
         HStack {
-            Image(systemName: tag.symbolName!)
-                .foregroundColor(Color(hex: tag.color!))
-            
-            Text(tag.tagName!)
+            if tag.tagName != nil {
+                Image(systemName: tag.symbolName!)
+                    .foregroundColor(Color(hex: tag.color!))
+                
+                Text(tag.tagName!)
+            }
         }
     }
 }

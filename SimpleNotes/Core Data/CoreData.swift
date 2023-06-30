@@ -9,38 +9,16 @@ import Foundation
 import UIKit
 import CoreData
 
-class CoreDataManager: ObservableObject {
-    private static var persistentContainer: NSPersistentContainer = {
-        
-        return NSPersistentContainer(name: "SimpleNotesDataModel")
-    }()
-
-    public var context: NSManagedObjectContext {
-        
-        get {
-            return CoreDataManager.persistentContainer.viewContext
-        }
-    }
-
-    init() {
-        CoreDataManager.persistentContainer.loadPersistentStores { description, error in
-            if let error = error {
-                print("Core Data failed to load: \(error.localizedDescription)")
-            }
-        }
-    }
-}
-
-func saveNewTag(properties: CurrentTagProperties) {
+func saveNewTag(properties: CurrentTagProperties, context: NSManagedObjectContext, tag: Tag?) {
   
-    let newTag = Tag(context: CoreDataManager().context)
+    let newTag = tag ?? Tag(context: context)
     newTag.symbolName = properties.tagIconName
     newTag.tagName = properties.tagName
     newTag.color = properties.tagColor.toHex()
     newTag.note = nil
     do {
-        if CoreDataManager().context.hasChanges {
-            try CoreDataManager().context.save()
+        if context.hasChanges {
+            try context.save()
         }
     } catch {
         print("An error occured while saving a tag.")
@@ -69,3 +47,19 @@ extension Tag {
     }
 }
 
+class PersistenceManager: ObservableObject {
+    lazy var persistentContainer: NSPersistentContainer  = {
+            let container = NSPersistentContainer(name: "SimpleNotesDataModel")
+            container.loadPersistentStores { (persistentStoreDescription, error) in
+                if let error = error {
+                    fatalError(error.localizedDescription)
+                }
+            }
+            return container
+        }()
+
+    public var context: NSManagedObjectContext {
+        
+        return self.persistentContainer.viewContext
+    }
+}

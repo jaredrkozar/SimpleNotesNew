@@ -24,27 +24,13 @@ extension Tag {
 }
 
 extension Tag : Identifiable {
-    func saveExistingTag(properties: CurrentTagProperties) {
-      
-        self.symbolName = properties.tagIconName
-        self.tagName = properties.tagName
-        self.color = properties.tagColor.toHex()
-        self.note = nil
-        do {
-            if CoreDataManager().context.hasChanges {
-                try CoreDataManager().context.save()
-            }
-        } catch {
-            print("An error occured while saving a tag.")
-        }
-    }
     
-    func deleteTag() {
+    func deleteTag(context: NSManagedObjectContext) {
       
-        CoreDataManager().context.delete(self)
+        context.delete(self)
         do {
-            if CoreDataManager().context.hasChanges {
-                try CoreDataManager().context.save()
+            if context.hasChanges {
+                try context.save()
             }
         } catch {
             print("An error occured while saving a tag.")
