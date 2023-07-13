@@ -17,11 +17,14 @@ struct NewTagView: View {
     var body: some View {
      
         NavigationView {
-            SettingsPage {
-                SettingsSectionView {
-                    TextCell(currentValue: $tagProperties.tagName, placeholder: "Enter tag name", leftText: "Tag name")
-                    LinkCell(title: "Select Icon", destination: SelectTagIconView(properties: tagProperties))
-                    ColorPickerCell(currentValue: $tagProperties.tagColor, tappedAction: {_ in })
+            VStack {
+                TagChip(tagName: tagProperties.tagName, tagIcon: tagProperties.tagIconName, tagColor: tagProperties.tagColor, fillInTag: false)
+                SettingsPage {
+                    SettingsSectionView {
+                        TextCell(currentValue: $tagProperties.tagName, placeholder: "Enter tag name", leftText: "Tag name")
+                        LinkCell(title: "Select Icon", destination: SelectTagIconView(properties: tagProperties))
+                        ColorPickerCell(currentValue: $tagProperties.tagColor, tappedAction: {_ in })
+                    }
                 }
             }
             .toolbar {

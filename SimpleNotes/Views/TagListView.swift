@@ -10,7 +10,13 @@ import SwiftUI
 struct TagListView: View {
     @State private var showingDeleteTagAlert = false
     @State private var showingNewTagSheet = false
-    @FetchRequest(fetchRequest: Tag.makeFetchRequest(), animation: .default) var tags: FetchedResults<Tag>
+
+    @FetchRequest(
+        sortDescriptors: [
+            SortDescriptor(\.tagName)
+        ]
+    ) var tags: FetchedResults<Tag>
+
     @Environment(\.managedObjectContext) var context
     @State private var selectedTag: Tag?
     

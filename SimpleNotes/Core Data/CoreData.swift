@@ -39,7 +39,7 @@ extension Note {
 extension Tag {
     
     public class func makeFetchRequest() -> NSFetchRequest<Tag> {
-        let sortDescriptor = NSSortDescriptor(key: "tagName", ascending: true, selector: #selector(NSString.caseInsensitiveCompare))
+        let sortDescriptor = NSSortDescriptor(key: "tagName", ascending: false, selector: #selector(NSString.caseInsensitiveCompare))
         
         let fetchRequest = NSFetchRequest<Tag>(entityName: String(describing: Tag.self))
         fetchRequest.sortDescriptors = [sortDescriptor]
