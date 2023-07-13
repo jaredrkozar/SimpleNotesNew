@@ -37,6 +37,7 @@
 		02D3D0632A48D6DE00A3BB13 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0622A48D6DE00A3BB13 /* Color.swift */; };
 		02D3D0672A49337600A3BB13 /* Tag+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */; };
 		02D3D0682A49337600A3BB13 /* Tag+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */; };
+		02EA60A42A607F6600BE8C84 /* FlexibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EA60A32A607F6600BE8C84 /* FlexibleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,6 +72,7 @@
 		02D3D0622A48D6DE00A3BB13 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		02EA60A32A607F6600BE8C84 /* FlexibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 				028F5F0C2A19847D009CBF44 /* SettingsModels.swift */,
 				028F5F122A1BDEB5009CBF44 /* SymbolsData.swift */,
 				02D3D0642A48D6E200A3BB13 /* Extensions */,
+				02EA60A32A607F6600BE8C84 /* FlexibleView.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -282,6 +285,7 @@
 				028F5F092A1983E1009CBF44 /* ThemeColors.swift in Sources */,
 				028F5F192A1DB2C2009CBF44 /* SliderCell.swift in Sources */,
 				028F5EEC2A1930C8009CBF44 /* CoreData.swift in Sources */,
+				02EA60A42A607F6600BE8C84 /* FlexibleView.swift in Sources */,
 				028F5F1B2A1E7396009CBF44 /* ToggleCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TagListView: View {
+    @State private var showingDeleteTagAlert = false
     @State private var showingNewTagSheet = false
     @FetchRequest(fetchRequest: Tag.makeFetchRequest(), animation: .default) var tags: FetchedResults<Tag>
     @Environment(\.managedObjectContext) var context
@@ -15,34 +16,31 @@ struct TagListView: View {
     
     var body: some View {
         NavigationStack {
-            List(tags, id: \.self) { tag in
-                NavigationLink {
-                    NoteListView(currentTag: tag.tagName)
-                } label: {
-                    TagCell(tag: tag)
-                        .swipeActions(edge: .leading) {
-                             Button {
-                                 selectedTag = tag
-                                 showingNewTagSheet.toggle()
+            ScrollView {
+                FlowLayout(tags, spacing: 9) { tag in
+                Button(action: {
+                    print(tag.tagName)
+                }, label: {
+                    TagChip(tagName: tag.tagName!, tagIcon: tag.symbolName!, tagColor: Color(hex: tag.color!)!, fillInTag: false)
+                        .contextMenu {
+                            Button(role: .none) {
+                              selectedTag = tag
+                                showingNewTagSheet = true
                             } label: {
-                                Label("Edit Tag", systemImage: "tag")
+                              Label("Edit Tag", systemImage: "tag")
                             }
                             
-                              .tint(.blue)
-                          }
-                        .swipeActions(edge: .trailing) {
-                             Button {
-                                 tag.deleteTag(context: context)
+                            Button(role: .destructive) {
+                              selectedTag = tag
+                                showingDeleteTagAlert = true
                             } label: {
-                                Label("Delete Tag", systemImage: "trash")
+                              Label("Delete Tag", systemImage: "trash")
                             }
-                            
-                              .tint(.red)
-                          }
-                }
+                        }
+                })
+              }
+              .padding()
             }
-
-            .listStyle(.insetGrouped)
 
             .navigationTitle("Tags")
             .toolbar {
@@ -58,8 +56,18 @@ struct TagListView: View {
         }
         
         .sheet(isPresented: $showingNewTagSheet) {
-            NewTagView(currentTag: selectedTag)
+            NewTagView(currentTag: $selectedTag)
                 .presentationDetents([.medium, .large])
+        }
+                                    
+        .alert(isPresented: $showingDeleteTagAlert) { () -> Alert in
+            let primaryButton = Alert.Button.destructive(Text("Delete Tag")) {
+                selectedTag?.deleteTag(context: context)
+            }
+            let secondaryButton = Alert.Button.cancel(Text("Keep Note")) {
+                return
+            }
+            return Alert(title: Text("Are you sure you want to delete this tag?"), message: Text("All of your notes with this tag will still be kept and not deleted from your device"), primaryButton: primaryButton, secondaryButton: secondaryButton)
         }
     }
 }
