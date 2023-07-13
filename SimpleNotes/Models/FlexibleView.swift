@@ -29,6 +29,7 @@ struct TagChip: View {
             RoundedRectangle(cornerRadius: 15)
                 .stroke(tagColor, lineWidth: fillInTag ? 0.0 : 4.0)
         )
+        .contentShape(Rectangle())
     }
 }
 

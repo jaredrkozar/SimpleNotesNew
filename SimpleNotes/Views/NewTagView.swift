@@ -10,7 +10,7 @@ import SwiftUI
 struct NewTagView: View {
     
     @StateObject private var tagProperties = CurrentTagProperties()
-    @State var currentTag: Tag?
+    @Binding var currentTag: Tag?
     @Environment(\.dismiss) var dismiss
     @Environment(\.managedObjectContext) var context
     
