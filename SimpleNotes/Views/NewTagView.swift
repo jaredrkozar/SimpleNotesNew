@@ -43,6 +43,7 @@ struct NewTagView: View {
                     }) {
                        Text("Save")
                     }
+                    .disabled(tagProperties.tagName.isEmpty)
                 }
             }
             .accentColor(tagProperties.tagColor)
