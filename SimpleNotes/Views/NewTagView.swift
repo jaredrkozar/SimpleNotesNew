@@ -18,12 +18,13 @@ struct NewTagView: View {
      
         NavigationView {
             VStack {
-                TagChip(tagName: tagProperties.tagName, tagIcon: tagProperties.tagIconName, tagColor: tagProperties.tagColor, fillInTag: false)
+                TagChip(tagName: tagProperties.tagName, tagIcon: tagProperties.tagIconName, tagColor: tagProperties.tagColor, fillInTag: false, tagSize: .large)
+                
                 SettingsPage {
                     SettingsSectionView {
                         TextCell(currentValue: $tagProperties.tagName, placeholder: "Enter tag name", leftText: "Tag name")
                         LinkCell(title: "Select Icon", destination: SelectTagIconView(properties: tagProperties))
-                        ColorPickerCell(currentValue: $tagProperties.tagColor, tappedAction: {_ in })
+                        ColorPickerCell(currentValue: $tagProperties.tagColor)
                     }
                 }
             }

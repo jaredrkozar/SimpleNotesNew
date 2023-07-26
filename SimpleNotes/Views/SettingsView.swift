@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @State var color: Color = .red
+    @State var present: Bool = false
+    
     var body: some View {
-        NavigationStack {
-            List {
-                Text("Settings screen")
+        VStack {
+            HStack {
+                Spacer()
+                Button("Dismiss", action: {
+                    present = false
+                }).padding()
             }
-            .navigationTitle("Notes")
         }
     }
 }
@@ -23,3 +28,4 @@ struct SettingsView_Previews: PreviewProvider {
         SettingsView()
     }
 }
+

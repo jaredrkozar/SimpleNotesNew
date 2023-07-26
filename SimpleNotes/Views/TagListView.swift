@@ -23,27 +23,27 @@ struct TagListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                FlowLayout(tags, spacing: 9) { tag in
-                Button(action: {
-                    print(tag.tagName)
-                }, label: {
-                    TagChip(tagName: tag.tagName!, tagIcon: tag.symbolName!, tagColor: Color(hex: tag.color!)!, fillInTag: false)
-                        .contextMenu {
-                            Button(role: .none) {
-                              selectedTag = tag
-                                showingNewTagSheet = true
-                            } label: {
-                              Label("Edit Tag", systemImage: "tag")
+                FlowLayout(tags, numberOfLines: 4, spacing: 9) { tag in
+                    NavigationLink {
+                        NoteListView(currentTag: tag.tagName)
+                    } label: {
+                        TagChip(tagName: tag.tagName!, tagIcon: tag.symbolName!, tagColor: Color(hex: tag.color ?? "#ffffff")!, fillInTag: false, tagSize: .large)
+                            .contextMenu {
+                                Button(role: .none) {
+                                  selectedTag = tag
+                                    showingNewTagSheet = true
+                                } label: {
+                                  Label("Edit Tag", systemImage: "tag")
+                                }
+                                
+                                Button(role: .destructive) {
+                                  selectedTag = tag
+                                    showingDeleteTagAlert = true
+                                } label: {
+                                  Label("Delete Tag", systemImage: "trash")
+                                }
                             }
-                            
-                            Button(role: .destructive) {
-                              selectedTag = tag
-                                showingDeleteTagAlert = true
-                            } label: {
-                              Label("Delete Tag", systemImage: "trash")
-                            }
-                        }
-                })
+                    }
               }
               .padding()
             }

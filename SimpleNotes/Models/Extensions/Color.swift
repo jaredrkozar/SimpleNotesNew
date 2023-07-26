@@ -66,3 +66,17 @@ extension Color {
         }
     }
 }
+
+extension UIColorWell {
+    override open func didMoveToSuperview() {
+        // ...
+        
+        // find a button and store handler with it in helper
+        if let uiButton = self.subviews.first?.subviews.last as? UIButton {
+            UIColorWellHelper.helper.execute = {
+                uiButton.sendActions(for: .touchUpInside)
+            }
+        }
+        
+    }
+}

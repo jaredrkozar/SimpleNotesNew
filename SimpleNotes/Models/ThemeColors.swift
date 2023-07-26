@@ -8,17 +8,64 @@
 import Foundation
 import SwiftUI
 
-struct ThemeColors: Identifiable {
-    var colorName: String
-    var color: Color
-    var id: Int
+enum ThemeColors: Int, CaseIterable, Identifiable {
+    var id: Self { self }
+    
+    case red
+    case orange
+    case yellow
+    case green
+    case lightBlue
+    case darkBlue
+    
+    var tintColor: Color {
+        switch self {
+            case .red:
+                return Color.red
+            case .orange:
+                return Color.orange
+            case .yellow:
+                return Color.yellow
+            case .green:
+                return Color.green
+            case .lightBlue:
+                return Color.cyan
+            case .darkBlue:
+                return Color.blue
+        }
+    }
+    
+    var themeName: String {
+        switch self {
+            case .red:
+                return "Fiery Red"
+            case .orange:
+                return "Atomic Orange"
+            case .yellow:
+                return "Mango Yellow"
+            case .green:
+                return "Grassy Green"
+            case .lightBlue:
+                return "Pastel Blue"
+            case .darkBlue:
+                return "Ocean Blue"
+        }
+    }
+    
+    var returnUIColor: UIColor {
+        switch self {
+            case .red:
+                return UIColor.systemRed
+            case .orange:
+                return UIColor.systemOrange
+            case .yellow:
+                return UIColor.systemYellow
+            case .green:
+                return UIColor.systemGreen
+            case .lightBlue:
+                return UIColor.systemCyan
+            case .darkBlue:
+                return UIColor.systemBlue
+        }
+    }
 }
-
-var colors: [ThemeColors] = [
-    ThemeColors(colorName: "Fiery Red", color: Color.red, id: 1),
-    ThemeColors(colorName: "Atomic Orange", color: Color.orange, id: 2),
-    ThemeColors(colorName: "Mango Yellow", color: Color.yellow, id: 3),
-    ThemeColors(colorName: "Grassy Green", color: Color.green, id: 4),
-    ThemeColors(colorName: "Pastel Blue", color: Color.cyan, id: 5),
-    ThemeColors(colorName: "Ocean Blue", color: Color.blue, id: 6),
-]

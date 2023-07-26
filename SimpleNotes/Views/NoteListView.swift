@@ -8,27 +8,43 @@
 import SwiftUI
 
 struct NoteListView: View {
-    @State private var currentTag: String?
-    var request: FetchRequest<Note>
-    var notes: FetchedResults<Note>{ request.wrappedValue }
+    @State var currentTag: String?
+    @State private var selectedNote: Note?
+    @State private var showTagSheet: Bool = false
+    @State private var scope = SearchScope()
+    
+    @FetchRequest(sortDescriptors: []) private var notes: FetchedResults<Note>
     
     @Environment(\.managedObjectContext) private var managedObjectContext
     
-    init(currentTag: String? = nil) {
-        var predicate: NSPredicate? = nil
-        if currentTag != nil {
-            predicate = NSPredicate(format: "tag.tagName CONTAINS[c] %@", currentTag!)
-        }
-        self.request = FetchRequest<Note>(sortDescriptors: [], predicate: predicate)
-    }
-    
     var body: some View {
        NavigationStack {
-           List(notes, id: \.self) { note in
-               Text("note.title!")
-
+           Group {
+               if !scope.tag.isEmpty && notes.count == 0 {
+                   noNotesForTag
+               } else if scope.tag.isEmpty && notes.count == 0 {
+                   noNotes
+               } else {
+                   List(notes, id: \.self) { note in
+                       NoteCell(note: note)
+                           .swipeActions(edge: .leading) {
+                               Button {
+                                    selectedNote = note
+                                   showTagSheet.toggle()
+                               } label: {
+                                   Label("Edit Tag", systemImage: "tag")
+                               }
+                               
+                                 .tint(.blue)
+                             }
+                   }
+               }
            }
 
+           .sheet(isPresented: $showTagSheet) {
+               AddTagsToNoteView(note: selectedNote ?? notes[0])
+           }
+           
            .listStyle(.insetGrouped)
 
            .navigationTitle("Notes")
@@ -51,5 +67,50 @@ struct NoteListView: View {
                }
            }
        }
+       .onAppear {
+           scope.tag = currentTag ?? ""
+       }
+        
+       .onChange(of: scope) { newValue in
+           notes.nsPredicate = NSPredicate(format:  "tag.tagName CONTAINS[c] %@", scope.tag)
+       }
     }
+    
+    var noNotes: some View {
+        VStack {
+            Image(systemName: "rectangle.portrait.slash")
+                .font(.title3)
+            
+            Text("You haven't created any notes yet")
+                .bold()
+                .font(.title)
+                .foregroundColor(.gray)
+            
+            Text("Tap the plus button in the upper right t create a new note")
+                .font(.title3)
+                .foregroundColor(.gray)
+        }
+        .multilineTextAlignment(.center)
+    }
+    
+    var noNotesForTag: some View {
+        VStack {
+            Image(systemName: "tag.slash")
+                .font(.title3)
+            
+            Text("There are no notes with the specified tag")
+                .bold()
+                .font(.title)
+                .foregroundColor(.gray)
+            
+            Text("Select another tag or add this tag to a note to have the note show up here")
+                .font(.title3)
+                .foregroundColor(.gray)
+        }
+        .multilineTextAlignment(.center)
+    }
+}
+
+struct SearchScope: Equatable {
+  var tag: String = ""
 }

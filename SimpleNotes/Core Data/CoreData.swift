@@ -25,6 +25,16 @@ func saveNewTag(properties: CurrentTagProperties, context: NSManagedObjectContex
     }
 }
 
+func saveData(context: NSManagedObjectContext) {
+    do {
+        if context.hasChanges {
+            try context.save()
+        }
+    } catch {
+        print("An error occured while saving a tag.")
+    }
+}
+
 extension Note {
     
     public class func makeFetchRequest() -> NSFetchRequest<Note> {
