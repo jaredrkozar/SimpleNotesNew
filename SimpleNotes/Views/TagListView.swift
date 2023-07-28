@@ -25,7 +25,7 @@ struct TagListView: View {
             ScrollView {
                 FlowLayout(tags, numberOfLines: 4, spacing: 9) { tag in
                     NavigationLink {
-                        NoteListView(currentTag: tag.tagName)
+                        NoteListView(currentTag: tag.tagName!)
                     } label: {
                         TagChip(tagName: tag.tagName!, tagIcon: tag.symbolName!, tagColor: Color(hex: tag.color ?? "#ffffff")!, fillInTag: false, tagSize: .large)
                             .contextMenu {

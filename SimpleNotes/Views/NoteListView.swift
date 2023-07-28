@@ -12,9 +12,10 @@ struct NoteListView: View {
     @State private var selectedNote: Note?
     @State private var showTagSheet: Bool = false
     @State private var scope = SearchScope()
-    
-    @FetchRequest(sortDescriptors: []) private var notes: FetchedResults<Note>
-    
+
+    @FetchRequest(sortDescriptors: [SortDescriptor(\.title, order: .forward)], animation: .default)
+    private var notes: FetchedResults<Note>
+
     @Environment(\.managedObjectContext) private var managedObjectContext
     
     var body: some View {
@@ -38,6 +39,7 @@ struct NoteListView: View {
                                  .tint(.blue)
                              }
                    }
+                   .id(UUID())
                }
            }
 
@@ -52,7 +54,7 @@ struct NoteListView: View {
                ToolbarItem(placement: .automatic) {
                    Button {
                        let newNote = Note(context: managedObjectContext)
-                       newNote.title = "title"
+                       newNote.title = "New Note"
                        newNote.data = Data()
 
                        do {
@@ -64,26 +66,42 @@ struct NoteListView: View {
                    } label: {
                        Image(systemName: "plus")
                    }
+                   
+                   Menu {
+                       ForEach(SortOptions.allCases) { sort in
+                           Button {
+                               scope.sortMethod = sort
+                           } label: {
+                               Text(sort.title)
+                           }
+                       }
+                   } label: {
+                       Label("Sort Documents", systemImage: "arrow.up.and.down.text.horizontal")
+                   }
                }
            }
        }
        .onAppear {
            scope.tag = currentTag ?? ""
+           scope.sortMethod = .dateAscending
        }
         
        .onChange(of: scope) { newValue in
-           notes.nsPredicate = NSPredicate(format:  "tag.tagName CONTAINS[c] %@", scope.tag)
+           if currentTag != nil {
+               notes.nsPredicate = NSPredicate(format:  "tag.tagName CONTAINS[c] %@", currentTag!)
+           }
+           notes.sortDescriptors = [newValue.sortMethod.sortMethods]
        }
     }
     
     var noNotes: some View {
         VStack {
             Image(systemName: "rectangle.portrait.slash")
-                .font(.title3)
+                .font(.system(size: 60))
             
             Text("You haven't created any notes yet")
                 .bold()
-                .font(.title)
+                .font(.title2)
                 .foregroundColor(.gray)
             
             Text("Tap the plus button in the upper right t create a new note")
@@ -96,11 +114,11 @@ struct NoteListView: View {
     var noNotesForTag: some View {
         VStack {
             Image(systemName: "tag.slash")
-                .font(.title3)
+                .font(.system(size: 60))
             
             Text("There are no notes with the specified tag")
                 .bold()
-                .font(.title)
+                .font(.title2)
                 .foregroundColor(.gray)
             
             Text("Select another tag or add this tag to a note to have the note show up here")
@@ -113,4 +131,5 @@ struct NoteListView: View {
 
 struct SearchScope: Equatable {
   var tag: String = ""
+    var sortMethod: SortOptions = .titleAscending
 }
