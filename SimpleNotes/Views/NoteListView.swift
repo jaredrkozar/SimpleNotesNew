@@ -51,7 +51,19 @@ struct NoteListView: View {
 
            .navigationTitle("Notes")
            .toolbar {
-               ToolbarItem(placement: .automatic) {
+               ToolbarItemGroup(placement: .automatic) {
+                   Menu {
+                       ForEach(SortOptions.allCases) { sort in
+                           Button {
+                               scope.sortMethod = sort
+                           } label: {
+                               Text(sort.title)
+                           }
+                       }
+                   } label: {
+                       Label("Sort Documents", systemImage: "arrow.up.and.down.text.horizontal")
+                   }
+                   
                    Button {
                        let newNote = Note(context: managedObjectContext)
                        newNote.title = "New Note"
@@ -66,24 +78,12 @@ struct NoteListView: View {
                    } label: {
                        Image(systemName: "plus")
                    }
-                   
-                   Menu {
-                       ForEach(SortOptions.allCases) { sort in
-                           Button {
-                               scope.sortMethod = sort
-                           } label: {
-                               Text(sort.title)
-                           }
-                       }
-                   } label: {
-                       Label("Sort Documents", systemImage: "arrow.up.and.down.text.horizontal")
-                   }
                }
            }
        }
        .onAppear {
            scope.tag = currentTag ?? ""
-           scope.sortMethod = .dateAscending
+           scope.sortMethod = .titleAscending
        }
         
        .onChange(of: scope) { newValue in
