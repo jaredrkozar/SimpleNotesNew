@@ -45,6 +45,8 @@ struct NoteListView: View {
 
            .sheet(isPresented: $showTagSheet) {
                AddTagsToNoteView(note: selectedNote ?? notes[0])
+                   .presentationDetents([.large])
+                   .presentationDragIndicator(.automatic)
            }
            
            .listStyle(.insetGrouped)

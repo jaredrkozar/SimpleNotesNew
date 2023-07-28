@@ -25,19 +25,23 @@ struct AddTagsToNoteView: View {
     }
     
     var body: some View {
-        VStack {
-            
-            NoteTagDropView(tags: (note.tag?.allObjects as [Tag]), tappedTagAction: { tagToAddToNote in
-                print(tagToAddToNote.tagName)
-                note.removeFromTag(tagToAddToNote)
-                saveData(context: context)
-            } , title: "Tags Not in Note", fillInTag: true)
-            
-            NoteTagDropView(tags: tagsNotInNote.reversed(), tappedTagAction: { tagToAddToNote in
-                print(tagToAddToNote.tagName)
-                note.addToTag(tagToAddToNote)
-                saveData(context: context)
-            } , title: "Tags Not in Note", fillInTag: false)
+        NavigationView {
+            VStack {
+                
+                NoteTagDropView(tags: (note.tag?.allObjects as [Tag]), tappedTagAction: { tagToAddToNote in
+                    print(tagToAddToNote.tagName)
+                    note.removeFromTag(tagToAddToNote)
+                    saveData(context: context)
+                } , title: "Current Tags in \(note.title ?? "Untitled Note")", fillInTag: true)
+                
+                NoteTagDropView(tags: tagsNotInNote.reversed(), tappedTagAction: { tagToAddToNote in
+                    print(tagToAddToNote.tagName)
+                    note.addToTag(tagToAddToNote)
+                    saveData(context: context)
+                } , title: "Tags Not in Note", fillInTag: false)
+            }
+            .padding()
+            .navigationTitle("Tags")
         }
     }
 }

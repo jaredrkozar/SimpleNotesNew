@@ -29,9 +29,10 @@ struct NoteTagDropView: View {
                         }
                         .draggable(tag)
                 }
-                .foregroundColor(.gray)
-                .cornerRadius(15)
+                
               }
+            .background(.tertiary)
+            .cornerRadius(15)
              
         }
     }
