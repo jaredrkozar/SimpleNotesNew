@@ -27,18 +27,20 @@ struct NoteListView: View {
                    noNotes
                } else {
                    List(notes, id: \.self) { note in
-                       NoteCell(note: note)
-                           .swipeActions(edge: .leading) {
-                               Button {
-                                    selectedNote = note
-                                   showTagSheet.toggle()
-                               } label: {
-                                   Label("Edit Tag", systemImage: "tag")
-                               }
-                               
-                                 .tint(.blue)
-                             }
-                   }
+                       NavigationLink(destination: NoteView()) {
+                           NoteCell(note: note)
+                               .swipeActions(edge: .leading) {
+                                   Button {
+                                        selectedNote = note
+                                       showTagSheet.toggle()
+                                   } label: {
+                                       Label("Edit Tag", systemImage: "tag")
+                                   }
+                                   
+                                     .tint(.blue)
+                                 }
+                       }
+                       }
                    .id(UUID())
                }
            }

@@ -34,6 +34,8 @@
 		028F5F1B2A1E7396009CBF44 /* ToggleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F1A2A1E7396009CBF44 /* ToggleCell.swift */; };
 		028F5F1D2A1E749E009CBF44 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F5F1C2A1E749E009CBF44 /* CustomCell.swift */; };
 		02AC69022A7371E600F4BEEA /* SortMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC69012A7371E600F4BEEA /* SortMethods.swift */; };
+		02AC69042A75BA3000F4BEEA /* Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC69032A75BA3000F4BEEA /* Tools.swift */; };
+		02AC69062A75BDEA00F4BEEA /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AC69052A75BDEA00F4BEEA /* DrawingView.swift */; };
 		02D3D0632A48D6DE00A3BB13 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0622A48D6DE00A3BB13 /* Color.swift */; };
 		02D3D0672A49337600A3BB13 /* Tag+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */; };
 		02D3D0682A49337600A3BB13 /* Tag+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */; };
@@ -75,6 +77,8 @@
 		028F5F1A2A1E7396009CBF44 /* ToggleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleCell.swift; sourceTree = "<group>"; };
 		028F5F1C2A1E749E009CBF44 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		02AC69012A7371E600F4BEEA /* SortMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortMethods.swift; sourceTree = "<group>"; };
+		02AC69032A75BA3000F4BEEA /* Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tools.swift; sourceTree = "<group>"; };
+		02AC69052A75BDEA00F4BEEA /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
 		02D3D0622A48D6DE00A3BB13 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		02D3D0652A49337600A3BB13 /* Tag+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		02D3D0662A49337600A3BB13 /* Tag+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tag+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
@@ -163,6 +167,7 @@
 				020A78842A4D1B7D00DB2041 /* SettingsView.swift */,
 				02EA60A52A60BEE200BE8C84 /* AddTagsToNoteView.swift */,
 				02EA60B62A71BBDB00BE8C84 /* Page.swift */,
+				02AC69052A75BDEA00F4BEEA /* DrawingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -179,6 +184,7 @@
 				02EA60A32A607F6600BE8C84 /* FlexibleView.swift */,
 				02EA60A72A60C6DC00BE8C84 /* NoteCell.swift */,
 				02AC69012A7371E600F4BEEA /* SortMethods.swift */,
+				02AC69032A75BA3000F4BEEA /* Tools.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -282,6 +288,7 @@
 				028F5EDB2A188715009CBF44 /* ContentView.swift in Sources */,
 				02EA60A62A60BEE200BE8C84 /* AddTagsToNoteView.swift in Sources */,
 				028F5EFC2A193C3F009CBF44 /* NoteView.swift in Sources */,
+				02AC69062A75BDEA00F4BEEA /* DrawingView.swift in Sources */,
 				028F5F172A1D9AAE009CBF44 /* StepperCell.swift in Sources */,
 				028F5EF52A1931F5009CBF44 /* Note+CoreDataProperties.swift in Sources */,
 				028F5EF42A1931F5009CBF44 /* Note+CoreDataClass.swift in Sources */,
@@ -293,6 +300,7 @@
 				028F5F112A1AC505009CBF44 /* SelectTagIconView.swift in Sources */,
 				02EA60AB2A60F2F700BE8C84 /* DragAndDropTypes.swift in Sources */,
 				02EA60B52A6D04A800BE8C84 /* ColorPickerCell.swift in Sources */,
+				02AC69042A75BA3000F4BEEA /* Tools.swift in Sources */,
 				028F5F152A1C6580009CBF44 /* OptionPickerCell.swift in Sources */,
 				028F5F0F2A19C72E009CBF44 /* LinkCell.swift in Sources */,
 				028F5ED92A188715009CBF44 /* SimpleNotesApp.swift in Sources */,
