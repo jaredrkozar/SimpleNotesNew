@@ -8,27 +8,37 @@
 import SwiftUI
 
 struct NoteView: View {
+    @StateObject var noteProperties = CurrentNoteProperties()
+    @State private var showingToolOptionsMenu = false
+    
     var body: some View {
-        DrawingView()
+        DrawingView(properties: noteProperties)
             .frame(maxWidth: .infinity)
         
             .navigationTitle("SwiftUI")
             .toolbar {
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Button("Pen") {
-                        print("Pressed")
-                    }
-
-                    Spacer()
-
-                    Button("Highlighter") {
-                        print("Pressed")
-                    }
-                    Button("Eraser") {
-                        print("Pressed")
+                ToolbarItemGroup(placement: .secondaryAction) {
+                    ForEach(ToolsList.allCases, id: \.rawValue) { tool in
+                        Button(tool.rawValue) {
+                            switchToTool(toTool: tool)
+                        }
+                    
                     }
                 }
             }
+            .sheet(isPresented: $showingToolOptionsMenu) {
+                ToolOptionsMenu(properties: noteProperties)
+                    .presentationDetents([.medium])
+                    .presentationDragIndicator(.automatic)
+            }
+    }
+    
+    func switchToTool(toTool: ToolsList?) {
+        if noteProperties.currentTool == toTool {
+            showingToolOptionsMenu = true
+        } else {
+            noteProperties.currentTool = toTool!
+        }
     }
 }
 
