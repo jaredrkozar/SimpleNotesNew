@@ -58,9 +58,6 @@ struct DrawingView: View {
                         if properties.currentTool == .eraser {
     
                             interactedLines = self.linesThatIntersect(with: lines.last!)
-                         
-                            
-  
                         }
                     }})
                 .onEnded({ value in
@@ -69,7 +66,15 @@ struct DrawingView: View {
                     if properties.currentTool == .eraser {
                         lines.removeLast()
                         lines = lines.filter { !interactedLines.contains($0) }
+                    } else if properties.currentTool == .lasso {
+                        lines[lines.count - 1].path.addLine(to: value.startLocation)
                         
+                        for line in lines.indices {
+                            if lines[lines.count - 1].lassoContainsLine(line: lines[line]) {
+                                lines[line].updateOpacity()
+                            }
+                        }
+            
                     }
                 })
         )
@@ -97,11 +102,17 @@ struct Line: Equatable {
     mutating func updateOpacity() {
         self.opacity = 0.6
     }
+    
+    func lassoContainsLine(line: Line) -> Bool{
+         return line.points.contains(where: {self.containsPoint(test: $0)})
+     }
+    
     func containsPoint(test: CGPoint) -> Bool {
         let polygon = self.points
         let count = polygon.count
         var j = 0
         var contains = false
+        
         for i in 0 ..< count - 1
         {
             j = i + 1

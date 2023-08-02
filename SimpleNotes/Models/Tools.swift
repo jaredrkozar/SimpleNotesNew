@@ -34,10 +34,18 @@ class Eraser: Tool {
     @Published var points: [CGPoint] = [CGPoint]()
 }
 
+class Lasso: Tool {
+    @Published var width: CGFloat = 3.0
+    
+    @Published var color: Color = .blue
+    @Published var points: [CGPoint] = [CGPoint]()
+}
+
 enum ToolsList: String, CaseIterable {
     case pen = "Pen"
     case highlighter = "Highlighter"
     case eraser = "Eraser"
+    case lasso = "Lasso"
 }
 
 class CurrentNoteProperties: ObservableObject {
@@ -45,6 +53,7 @@ class CurrentNoteProperties: ObservableObject {
     private var pen = Pen()
     private var highlighter = Highlighter()
     private var eraser = Eraser()
+    private var lasso = Lasso()
     
     var currentTool: ToolsList = .pen {
         didSet {
@@ -55,6 +64,8 @@ class CurrentNoteProperties: ObservableObject {
                 toolProperties = highlighter
             case .eraser:
                 toolProperties = eraser
+            case .lasso:
+                toolProperties = lasso
             default:
                 toolProperties = pen
             }
