@@ -23,24 +23,20 @@ struct DrawingView: View {
                 context.opacity = line.opacity
                 var path = Path()
                 
-                
+                path = smoothCurveFromPoints(line.points)
+
                 context.stroke(path, with: .color(line.color), style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
             }
         }
         .gesture(
             DragGesture(minimumDistance: 0)
                 .onChanged({ value in
-                    let index = lines.count - 1
-
                     self.pointsForLine.append(value.location)
                     
                     if value.translation == .zero {
-                        print("SStart")
                         //length of line is zero -> new line
                         lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                     } else {
-                        print("change")
-                       
                         guard let lastIndex = lines.indices.last else { return }
                         
                         lines[lastIndex].points.append(value.location)
@@ -56,14 +52,16 @@ struct DrawingView: View {
                         lines.removeLast()
                         lines = lines.filter { !interactedLines.contains($0) }
                     } else if properties.currentTool == .lasso {
-//                        lines[lines.count - 1].path.addLine(to: value.startLocation)
+                        
+                        if properties.currentTool == .lasso {
+                            lines[lines.count - 1].points.append(value.startLocation)
+                        }
                         
                         for line in lines.indices {
                             if lines[lines.count - 1].lassoContainsLine(line: lines[line]) {
                                 lines[line].updateOpacity()
                             }
                         }
-            
                     }
                 })
         )
@@ -78,6 +76,47 @@ struct DrawingView: View {
         let x=(point1.x+point2.x)/2
         let y=(point1.y+point2.y)/2
         return CGPoint(x: x, y: y)
+    }
+    
+    func smoothCurveFromPoints(_ points: [CGPoint]) -> Path {
+        var path = Path()
+        let count = points.count
+        
+        guard count > 1 else {
+            // If there are fewer than two points, we can't draw a curve, return an empty path
+            return path
+        }
+        
+        path.move(to: points[0])
+        
+        for i in 0..<count-1 {
+            let currentPoint = points[i]
+            let nextPoint = points[i + 1]
+            
+            if i == 0 {
+                // The first control point is the first point itself
+                path.addLine(to: currentPoint)
+            }
+            
+            let nextNextPoint: CGPoint
+            if i + 2 < count {
+                nextNextPoint = points[i + 2]
+            } else {
+                nextNextPoint = nextPoint
+            }
+            
+            // Calculate control points
+            let controlPoint1 = CGPoint(x: currentPoint.x + (nextPoint.x - points[max(i-1, 0)].x) / 6.0,
+                                        y: currentPoint.y + (nextPoint.y - points[max(i-1, 0)].y) / 6.0)
+            
+            let controlPoint2 = CGPoint(x: nextPoint.x - (nextNextPoint.x - currentPoint.x) / 6.0,
+                                        y: nextPoint.y - (nextNextPoint.y - currentPoint.y) / 6.0)
+            
+            // Add curve to the next point using the calculated control points
+            path.addCurve(to: nextPoint, control1: controlPoint1, control2: controlPoint2)
+        }
+        
+        return path
     }
 }
 
