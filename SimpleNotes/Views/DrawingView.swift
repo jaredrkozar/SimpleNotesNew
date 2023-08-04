@@ -21,7 +21,10 @@ struct DrawingView: View {
         Canvas { context, size in
             for line in lines {
                 context.opacity = line.opacity
-                context.stroke(line.path, with: .color(line.color), style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
+                var path = Path()
+                
+                
+                context.stroke(path, with: .color(line.color), style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
             }
         }
         .gesture(
@@ -31,29 +34,16 @@ struct DrawingView: View {
 
                     self.pointsForLine.append(value.location)
                     
-                    if value.translation.width + value.translation.height == 0 {
+                    if value.translation == .zero {
+                        print("SStart")
                         //length of line is zero -> new line
-                        lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, path: Path()))
-                        print(":FFFFFF")
-                        
-                        //sets up previouspoint and previousPreviousPoint to be the first item in the points array (the current point)
-                        previousPoint = pointsForLine[pointsForLine.count - 1]
+                        lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                     } else {
-                        guard index > -1  else { print(index)
-                            return }
-                        previousPreviousPoint = previousPoint
-                        previousPoint = pointsForLine[pointsForLine.count - 2]
+                        print("change")
+                       
+                        guard let lastIndex = lines.indices.last else { return }
                         
-                        //gets the midpoint of the previous point and the point before that one
-                        let firstMidpoint: CGPoint = midPoint(point1: previousPoint, point2: previousPreviousPoint)
-                        
-                        //gets the midpoint of the current point and the previous point
-                        let secondMidpoint: CGPoint = midPoint(point1: value.location, point2: previousPoint)
-                        
-                        //moves to first midpoint and adds quadratic curve between the second midpoint and the previous point
-                        lines[index].path.move(to: firstMidpoint)
-                        lines[index].path.addQuadCurve(to: secondMidpoint, control: previousPoint)
-                        lines[index].points.append(value.location)
+                        lines[lastIndex].points.append(value.location)
                         
                         if properties.currentTool == .eraser {
     
@@ -61,13 +51,12 @@ struct DrawingView: View {
                         }
                     }})
                 .onEnded({ value in
-                    
                     pointsForLine.removeAll()
                     if properties.currentTool == .eraser {
                         lines.removeLast()
                         lines = lines.filter { !interactedLines.contains($0) }
                     } else if properties.currentTool == .lasso {
-                        lines[lines.count - 1].path.addLine(to: value.startLocation)
+//                        lines[lines.count - 1].path.addLine(to: value.startLocation)
                         
                         for line in lines.indices {
                             if lines[lines.count - 1].lassoContainsLine(line: lines[line]) {
@@ -96,7 +85,6 @@ struct Line: Equatable {
     var color: Color
     var width: CGFloat
     var opacity: Double
-    var path: Path
     var points: [CGPoint] = [CGPoint]()
     
     mutating func updateOpacity() {
