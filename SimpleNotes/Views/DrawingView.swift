@@ -12,37 +12,31 @@ struct DrawingView: View {
     @State private var lines: [Line] = [Line]()
     @State private var interactedLines: [Line] = [Line]()
     
-    @State private var pointsForLine = [CGPoint]()
-    @State private var previousPoint: CGPoint = CGPoint()
-    @State private var previousPreviousPoint: CGPoint = CGPoint()
     @ObservedObject var properties: CurrentNoteProperties
+    let engine = DrawingPath()
     
     var body: some View {
         Canvas { context, size in
             for line in lines {
                 context.opacity = line.opacity
-                var path = Path()
-                
-                path = smoothCurveFromPoints(line.points)
-
+                let path = engine.createPath(for: line.points)
                 context.stroke(path, with: .color(line.color), style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
             }
         }
         .gesture(
             DragGesture(minimumDistance: 0)
                 .onChanged({ value in
-                    self.pointsForLine.append(value.location)
                     
                     if value.translation == .zero {
                         //length of line is zero -> new line
                         lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                     } else {
                         guard let lastIndex = lines.indices.last else { return }
-                        
+
                         lines[lastIndex].points.append(value.location)
-                        
+
                         if properties.currentTool == .eraser {
-    
+
                             interactedLines = self.linesThatIntersect(with: lines.last!)
                         }
                     }})
@@ -69,54 +63,6 @@ struct DrawingView: View {
     
     func linesThatIntersect(with line: Line) -> [Line] {
         return self.lines.filter({$0.intersects(line: line)})
-    }
-    
-    func midPoint(point1: CGPoint, point2: CGPoint) -> CGPoint {
-        //gets the midpoints of the two specified points
-        let x=(point1.x+point2.x)/2
-        let y=(point1.y+point2.y)/2
-        return CGPoint(x: x, y: y)
-    }
-    
-    func smoothCurveFromPoints(_ points: [CGPoint]) -> Path {
-        var path = Path()
-        let count = points.count
-        
-        guard count > 1 else {
-            // If there are fewer than two points, we can't draw a curve, return an empty path
-            return path
-        }
-        
-        path.move(to: points[0])
-        
-        for i in 0..<count-1 {
-            let currentPoint = points[i]
-            let nextPoint = points[i + 1]
-            
-            if i == 0 {
-                // The first control point is the first point itself
-                path.addLine(to: currentPoint)
-            }
-            
-            let nextNextPoint: CGPoint
-            if i + 2 < count {
-                nextNextPoint = points[i + 2]
-            } else {
-                nextNextPoint = nextPoint
-            }
-            
-            // Calculate control points
-            let controlPoint1 = CGPoint(x: currentPoint.x + (nextPoint.x - points[max(i-1, 0)].x) / 6.0,
-                                        y: currentPoint.y + (nextPoint.y - points[max(i-1, 0)].y) / 6.0)
-            
-            let controlPoint2 = CGPoint(x: nextPoint.x - (nextNextPoint.x - currentPoint.x) / 6.0,
-                                        y: nextPoint.y - (nextNextPoint.y - currentPoint.y) / 6.0)
-            
-            // Add curve to the next point using the calculated control points
-            path.addCurve(to: nextPoint, control1: controlPoint1, control2: controlPoint2)
-        }
-        
-        return path
     }
 }
 
@@ -190,5 +136,34 @@ struct Line: Equatable {
     private func onSegment(_ p1: CGPoint, _ p2: CGPoint, _ q1: CGPoint) -> Bool
     {
         return p2.x <= max(p1.x, q1.x) && p2.x >= min(p1.x, q1.x) && p2.y <= max(p1.y, q1.y) && p2.y > min(p1.y, q1.y)
+    }
+}
+
+class DrawingPath {
+    
+    func midPoint(point1: CGPoint, point2: CGPoint) -> CGPoint {
+        //gets the midpoints of the two specified points
+        let x=(point1.x+point2.x)/2
+        let y=(point1.y+point2.y)/2
+        return CGPoint(x: x, y: y)
+    }
+    
+    func createPath(for points: [CGPoint]) -> Path {
+        var path = Path()
+        
+        if let firstPoint = points.first {
+            path.move(to: firstPoint)
+        }
+        
+        for index in 1..<points.count {
+            let mid = midPoint(point1: points[index - 1], point2: points[index])
+            path.addQuadCurve(to: mid, control: points[index - 1])
+        }
+        
+        if let last = points.last {
+            path.addLine(to: last)
+        }
+        
+        return path
     }
 }
