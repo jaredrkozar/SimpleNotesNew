@@ -14,8 +14,8 @@ struct NoteView: View {
     var body: some View {
         DrawingView(properties: noteProperties)
             .frame(maxWidth: .infinity)
-        
             .navigationTitle("SwiftUI")
+
             .toolbar {
                 ToolbarItemGroup(placement: .secondaryAction) {
                     ForEach(ToolsList.allCases, id: \.rawValue) { tool in
@@ -28,12 +28,13 @@ struct NoteView: View {
             }
             .sheet(isPresented: $showingToolOptionsMenu) {
                 ToolOptionsMenu(properties: noteProperties)
-                    .presentationDetents([.medium])
+                    .presentationDetents(noteProperties.currentTool != .eraser ? [.medium] : [.custom(MyDetent.self)])
                     .presentationDragIndicator(.automatic)
             }
     }
     
     func switchToTool(toTool: ToolsList?) {
+        noteProperties.showSelectionMenu = false
         if noteProperties.currentTool == toTool {
             showingToolOptionsMenu = true
         } else {
@@ -47,3 +48,12 @@ struct NoteView_Previews: PreviewProvider {
         NoteView()
     }
 }
+
+struct MyDetent: CustomPresentationDetent {
+    // 1
+    static func height(in context: Context) -> CGFloat? {
+        // 2
+        return max(50, context.maxDetentValue * 0.2)
+    }
+}
+

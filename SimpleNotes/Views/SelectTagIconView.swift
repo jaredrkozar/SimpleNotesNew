@@ -37,7 +37,7 @@ struct SelectTagIconView: View {
 struct SymbolCell: View {
     @ObservedObject var properties: CurrentTagProperties
     @State var currentSymbol: String
-    
+ 
     var body: some View {
         Button {
             properties.tagIconName = currentSymbol

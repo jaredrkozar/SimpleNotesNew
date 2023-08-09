@@ -15,20 +15,20 @@ protocol Tool: ObservableObject {
 }
 
 class Pen: Tool {
-    @Published var width: CGFloat = 4.0
+    @Published var width: CGFloat = 5.0
     @Published var color: Color = .cyan
     @Published var points: [CGPoint] = [CGPoint]()
 }
 
 class Highlighter: Tool {
-    @Published var width: CGFloat = 3.0
+    @Published var width: CGFloat = 2.5
     
     @Published var color: Color = .yellow
     @Published var points: [CGPoint] = [CGPoint]()
 }
 
 class Eraser: Tool {
-    @Published var width: CGFloat = 3.0
+    @Published var width: CGFloat = 2.5
     
     @Published var color: Color = .primary
     @Published var points: [CGPoint] = [CGPoint]()
@@ -46,6 +46,7 @@ enum ToolsList: String, CaseIterable {
     case highlighter = "Highlighter"
     case eraser = "Eraser"
     case lasso = "Lasso"
+    case scoll = "Scroll"
 }
 
 class CurrentNoteProperties: ObservableObject {
@@ -79,8 +80,11 @@ class CurrentNoteProperties: ObservableObject {
             return newTool ?? pen;
         }
         set {
+            showSelectionMenu = false
             self.newTool = newValue
         }
     }
+    
+    @Published var showSelectionMenu: Bool = false
 }
 
