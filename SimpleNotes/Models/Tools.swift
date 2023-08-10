@@ -85,8 +85,7 @@ class CurrentNoteProperties: ObservableObject {
         }
     }
     
-    @Published var removeLasso: Bool?
-    
+    var removeLasso: Bool?
     @Published var selectMenuPoint: CGPoint?
     @Published var selectedLines: [Int] = [Int]()
     

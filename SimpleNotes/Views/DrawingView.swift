@@ -19,7 +19,7 @@ struct DrawingView: View {
     var body: some View {
         ZStack {
             if properties.canshowSelectMenu == true {
-                Rectangle()
+                RoundedRectangle(cornerRadius: 6.0)
                     .foregroundColor(.green)
                     .frame(width: 100, height: 30)
                     .position(properties.selectMenuPoint!)
@@ -39,6 +39,11 @@ struct DrawingView: View {
                     if properties.currentTool != .scoll {
                         if value.translation == .zero {
                             //length of line is zero -> new line
+                        
+                            
+                            if properties.removeLasso == true {
+                                lines.removeLast()
+                            }
                             properties.endLasso()
                             lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                             
@@ -70,10 +75,8 @@ struct DrawingView: View {
                         
                     } else if properties.currentTool == .lasso {
                         lines[lines.count - 1].points.append(value.startLocation)
-                        print(selectMinX)
-                        print(selectMaxX)
                         
-                        properties.selectMenuPoint = CGPoint(x: (selectMinX! + selectMaxX!) / 2, y: selectMinY!)
+                        properties.selectMenuPoint = CGPoint(x: (selectMinX! + selectMaxX!) / 2, y: (selectMinY! - 30.0))
                         
                         for (index, _) in lines.enumerated() {
                             
@@ -81,7 +84,8 @@ struct DrawingView: View {
                                 properties.selectedLines.append(index)
                             }
                         }
-                        removeAllInteractedLines()
+                        properties.removeLasso = true
+                        endSelectLasso()
                     }
                     
                 })
@@ -112,6 +116,12 @@ struct DrawingView: View {
         self.selectMinX = min(selectMinX, translatedPoint.x)
         self.selectMaxX = max(selectMaxX, translatedPoint.x)
         self.selectMinY = min(selectMinY, translatedPoint.y)
+    }
+    
+    private func endSelectLasso() {
+        self.selectMinX = nil
+        self.selectMaxX = nil
+        self.selectMinY = nil
     }
 }
 
