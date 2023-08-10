@@ -53,7 +53,7 @@ struct DrawingView: View {
                                     
                                     if lines[lines.count - 1].intersects(line: lines[index]) {
                                         properties.selectedLines.append(index)
-                                        lines[index].opacity = 0.7
+                                        lines[index].opacity = 0.8
                                     }
                                 }
                                 
