@@ -34,7 +34,6 @@ struct NoteView: View {
     }
     
     func switchToTool(toTool: ToolsList?) {
-        noteProperties.showSelectionMenu = false
         if noteProperties.currentTool == toTool {
             showingToolOptionsMenu = true
         } else {

@@ -95,6 +95,7 @@ struct NoteListView: View {
                notes.nsPredicate = NSPredicate(format:  "tag.tagName CONTAINS[c] %@", currentTag!)
            }
            notes.sortDescriptors = [newValue.sortMethod.sortMethods]
+           print(notes.count)
        }
     }
     

@@ -40,6 +40,7 @@ struct CustomSlider: View {
                     .frame(width: 35, height: 35)
                     .offset(x: thumbOffset)
                     .shadow(radius: 3)
+                    .foregroundColor(.white)
                     .gesture(
                     DragGesture()
                         .onChanged { value in
