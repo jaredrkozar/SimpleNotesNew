@@ -90,6 +90,7 @@ class CurrentNoteProperties: ObservableObject {
     var selectedLines: [Int] = [Int]()
     
     var removeLasso: Bool?
+    var draggingLasso: Bool?
     var selectMinX: CGFloat?
     var selectMaxX: CGFloat?
     var selectMinY: CGFloat?
@@ -100,12 +101,12 @@ class CurrentNoteProperties: ObservableObject {
     }
     
     func endLasso() {
+        draggingLasso = false
         removeLasso = false
         selectMenuPoint = nil
         selectMinX = nil
         selectMinX = nil
         selectMaxX = nil
-        selectedLines.removeAll()
     }
     
     var canshowSelectMenu: Bool {

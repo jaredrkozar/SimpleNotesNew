@@ -11,10 +11,11 @@ import SwiftUI
 struct DrawingView: View {
     @State private var lines: [Line] = [Line]()
     @ObservedObject var properties: CurrentNoteProperties
+    @State private var currentPoint: CGPoint? = .zero
     
     var body: some View {
         ZStack {
-            if properties.canshowSelectMenu == true {
+            if properties.canshowSelectMenu == true && properties.draggingLasso == false {
                     lassoMenu
                         .position(properties.selectMenuPoint!)
                         .allowsHitTesting(true)
@@ -35,39 +36,79 @@ struct DrawingView: View {
                     {
                         if value.translation == .zero {
                             //length of line is zero -> new line
-                        
-                            if properties.removeLasso == true {
-                                properties.endLasso()
-                                if lines.count > 0 {
-                                    lines.removeLast()
-                                }
-                            }
                             
-                            lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
-                        } else {
-                            guard let lastIndex = lines.indices.last else { return }
-                            
-                            lines[lastIndex].points.append(value.location)
-                            
-                            if properties.currentTool == .eraser {
+                            if properties.selectedLines.count > 1 && lines[lines.count - 1].containsPoint(test: value.startLocation) {
                                 
-                                for (index, _) in lines.enumerated() {
-                                    
-                                    if lines[lines.count - 1].intersects(line: lines[index]) {
-                                        properties.selectedLines.append(index)
-                                        lines[index].opacity = 0.8
+                                properties.draggingLasso = true
+                            } else {
+                                if properties.removeLasso == true {
+                                    properties.endLasso()
+                                    properties.selectedLines.removeAll()
+                                    if lines.count > 0 {
+                                        lines.removeLast()
                                     }
                                 }
                                 
-                            } else if properties.currentTool == .lasso {
-                                updateSelectRect(value.location)
+                                lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
+                            }
+                        } else {
+                            //the user is currently moving their finger
+                            
+                            guard value.translation != .zero else {
+                                lines.removeLast()
+                                return
+                            }
+                            
+                            if properties.selectedLines.count > 1 && properties.draggingLasso == true {
+       
+                                //moving the currently selected lines
+                                var differenceX: CGFloat = 0
+                                var differenceY: CGFloat = 0
+                                
+                                if (currentPoint == CGPoint.zero && value.location != CGPoint.zero){
+                                    differenceX = value.location.x
+                                        differenceY = value.location.y
+                                    } else{
+                                        differenceX = value.location.x - currentPoint!.x
+                                        differenceY = value.location.y - currentPoint!.y
+                                    }
+                                let vector = CGVector(dx: differenceX, dy: differenceY)
+                                
+                                for (index, _) in properties.selectedLines.enumerated() {
+                                    
+                                    lines[index].translate(vector: vector)
+                                }
+                                properties.selectMinX = properties.selectMinX! + differenceX
+                                properties.selectMinY = properties.selectMinY! + differenceY
+                                properties.selectMaxX = properties.selectMaxX! + differenceX
+                                
+                                currentPoint = value.location
+                                
+                            } else {
+                                guard let lastIndex = lines.indices.last else { return }
+                                
+                                lines[lastIndex].points.append(value.location)
+                                
+                                if properties.currentTool == .eraser {
+                                    
+                                    for (index, _) in lines.enumerated() {
+                                        
+                                        if lines[lines.count - 1].intersects(line: lines[index]) {
+                                            properties.selectedLines.append(index)
+                                            lines[index].opacity = 0.8
+                                        }
+                                    }
+                                    
+                                } else if properties.currentTool == .lasso {
+                                    updateSelectRect(value.location)
 
+                                }
                             }
                         }
                         
                     }})
                 .onEnded({ value in
-                    guard properties.canshowSelectMenu == false && value.translation != .zero else {
+                    guard value.translation != .zero else {
                         lines.removeLast()
                         return
                     }
@@ -78,17 +119,21 @@ struct DrawingView: View {
                         removeAllInteractedLines()
                     } else if properties.currentTool == .lasso {
                         
-                        lines[lines.count - 1].points.append(value.startLocation)
-                        
-                        properties.selectMenuPoint = CGPoint(x: (properties.selectMinX! + properties.selectMaxX!) / 2, y: (properties.selectMinY! - 30.0))
-                        
-                        for (index, _) in lines.enumerated() {
+                        if properties.selectedLines.count == 0 {
+                            lines[lines.count - 1].points.append(value.startLocation)
                             
-                            if lines[lines.count - 1].lassoContainsLine(line: lines[index]) {
-                                properties.selectedLines.append(index)
-                                lines[index].opacity = 0.8
+                            for (index, _) in lines.enumerated() {
+                                
+                                if lines[lines.count - 1].lassoContainsLine(line: lines[index]) {
+                                    properties.selectedLines.append(index)
+                                    lines[index].opacity = 0.8
+                                }
                             }
                         }
+                        properties.draggingLasso = false
+                        
+                        properties.selectMenuPoint = CGPoint(x: (properties.selectMinX! + properties.selectMaxX!) / 2, y: (properties.selectMinY! - 30.0))
+                
                         properties.removeLasso = true
                     }
                     
@@ -256,7 +301,11 @@ public extension CGPoint{
     // Moves the CGPoint by the specified value
     func moveBy(x: CGFloat, y: CGFloat) -> CGPoint
     {
-        return CGPoint(x: x + self.x, y: y+self.y)
+        return self + CGVector(dx: x, dy: y)
+    }
+    
+    static func + (lhs: CGPoint, rhs: CGVector) -> CGPoint{
+        return CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
     }
 }
 
