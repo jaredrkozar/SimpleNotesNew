@@ -36,13 +36,14 @@ struct DrawingView: View {
                         if value.translation == .zero {
                             //length of line is zero -> new line
                         
-                            if properties.removeLasso == true && lines.count > 0 {
+                            if properties.removeLasso == true {
                                 properties.endLasso()
-                                lines.removeLast()
+                                if lines.count > 0 {
+                                    lines.removeLast()
+                                }
                             }
                             
                             lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
-                            
                         } else {
                             guard let lastIndex = lines.indices.last else { return }
                             
@@ -60,12 +61,16 @@ struct DrawingView: View {
                                 
                             } else if properties.currentTool == .lasso {
                                 updateSelectRect(value.location)
+
                             }
                         }
                         
                     }})
                 .onEnded({ value in
-                    guard properties.canshowSelectMenu == false else { return }
+                    guard properties.canshowSelectMenu == false && value.translation != .zero else {
+                        lines.removeLast()
+                        return
+                    }
                     
                     if properties.currentTool == .eraser {
                         
