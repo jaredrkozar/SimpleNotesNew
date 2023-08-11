@@ -95,7 +95,7 @@ struct DrawingView: View {
                                         
                                         if lines[lines.count - 1].intersects(line: lines[index]) {
                                             properties.selectedLines.append(index)
-                                            lines[index].opacity = 0.8
+                                            lines[index].opacity = 0.5
                                         }
                                     }
                                     
@@ -126,7 +126,6 @@ struct DrawingView: View {
                                 
                                 if lines[lines.count - 1].lassoContainsLine(line: lines[index]) {
                                     properties.selectedLines.append(index)
-                                    lines[index].opacity = 0.8
                                 }
                             }
                         }
