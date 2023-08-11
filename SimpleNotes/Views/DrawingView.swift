@@ -101,7 +101,6 @@ struct DrawingView: View {
                                     
                                 } else if properties.currentTool == .lasso {
                                     updateSelectRect(value.location)
-
                                 }
                             }
                         }
@@ -114,16 +113,13 @@ struct DrawingView: View {
                     }
                     
                     if properties.currentTool == .eraser {
-                        
                         lines.removeLast()
                         removeAllInteractedLines()
                     } else if properties.currentTool == .lasso {
-                        
                         if properties.selectedLines.count == 0 {
                             lines[lines.count - 1].points.append(value.startLocation)
                             
                             for (index, _) in lines.enumerated() {
-                                
                                 if lines[lines.count - 1].lassoContainsLine(line: lines[index]) {
                                     properties.selectedLines.append(index)
                                 }
@@ -225,8 +221,7 @@ struct Line: Equatable {
         var j = 0
         var contains = false
         
-        for i in 0 ..< count - 1
-        {
+        for i in 0 ..< count - 1 {
             j = i + 1
             if ( ((polygon[i].y >= test.y) != (polygon[j].y >= test.y)) &&
                 (test.x <= (polygon[j].x - polygon[i].x) * (test.y - polygon[i].y) /
@@ -298,12 +293,11 @@ struct Line: Equatable {
 public extension CGPoint{
     
     // Moves the CGPoint by the specified value
-    func moveBy(x: CGFloat, y: CGFloat) -> CGPoint
-    {
+    func moveBy(x: CGFloat, y: CGFloat) -> CGPoint {
         return self + CGVector(dx: x, dy: y)
     }
     
-    static func + (lhs: CGPoint, rhs: CGVector) -> CGPoint{
+    static func + (lhs: CGPoint, rhs: CGVector) -> CGPoint {
         return CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
     }
 }
