@@ -12,17 +12,12 @@ struct DrawingView: View {
     @State private var lines: [Line] = [Line]()
     @ObservedObject var properties: CurrentNoteProperties
     
-    @State var selectMinX: CGFloat?
-    @State var selectMaxX: CGFloat?
-    @State var selectMinY: CGFloat?
-    
     var body: some View {
         ZStack {
             if properties.canshowSelectMenu == true {
-                RoundedRectangle(cornerRadius: 6.0)
-                    .foregroundColor(.green)
-                    .frame(width: 100, height: 30)
-                    .position(properties.selectMenuPoint!)
+                    lassoMenu
+                        .position(properties.selectMenuPoint!)
+                        .allowsHitTesting(true)
             }
             
             Canvas { context, size in
@@ -36,15 +31,16 @@ struct DrawingView: View {
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged({ value in
-                    if properties.currentTool != .scoll {
+                    if properties.currentTool != .scoll && (properties.selectMenuRect?.contains(value.startLocation) == false)
+                    {
                         if value.translation == .zero {
                             //length of line is zero -> new line
                         
-                            
-                            if properties.removeLasso == true {
+                            if properties.removeLasso == true && lines.count > 0 {
+                                properties.endLasso()
                                 lines.removeLast()
                             }
-                            properties.endLasso()
+                            
                             lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                             
                         } else {
@@ -69,27 +65,49 @@ struct DrawingView: View {
                         
                     }})
                 .onEnded({ value in
+                    guard properties.canshowSelectMenu == false else { return }
+                    
                     if properties.currentTool == .eraser {
+                        
                         lines.removeLast()
                         removeAllInteractedLines()
-                        
                     } else if properties.currentTool == .lasso {
+                        
                         lines[lines.count - 1].points.append(value.startLocation)
                         
-                        properties.selectMenuPoint = CGPoint(x: (selectMinX! + selectMaxX!) / 2, y: (selectMinY! - 30.0))
+                        properties.selectMenuPoint = CGPoint(x: (properties.selectMinX! + properties.selectMaxX!) / 2, y: (properties.selectMinY! - 30.0))
                         
                         for (index, _) in lines.enumerated() {
                             
                             if lines[lines.count - 1].lassoContainsLine(line: lines[index]) {
                                 properties.selectedLines.append(index)
+                                lines[index].opacity = 0.8
                             }
                         }
                         properties.removeLasso = true
-                        endSelectLasso()
                     }
                     
                 })
         )
+    }
+    
+    var lassoMenu: some View {
+        HStack {
+            Button {
+                lines.removeLast()
+                removeAllInteractedLines()
+                properties.endLasso()
+            } label: {
+                Image(systemName: "trash")
+            }
+        }
+        .padding(5)
+        .zIndex(2.0)
+        .background(.green)
+        .foregroundColor(.white)
+        .cornerRadius(6.0)
+        .frame(width: 50)
+        .allowsHitTesting(true)
     }
     
     func removeAllInteractedLines() {
@@ -104,24 +122,18 @@ struct DrawingView: View {
     private func updateSelectRect(_ translatedPoint: CGPoint) {
         
         guard translatedPoint.y != 0.0 else { return }
-        guard let selectMinX = selectMinX,
-              let selectMaxX = selectMaxX,
-              let selectMinY = selectMinY else {
-            selectMinX = translatedPoint.x
-            selectMaxX = translatedPoint.x
-            selectMinY = translatedPoint.y
+        guard let selectMinX = properties.selectMinX,
+              let selectMaxX = properties.selectMaxX,
+              let selectMinY = properties.selectMinY else {
+            properties.selectMinX = translatedPoint.x
+            properties.selectMaxX = translatedPoint.x
+            properties.selectMinY = translatedPoint.y
             return
         }
         
-        self.selectMinX = min(selectMinX, translatedPoint.x)
-        self.selectMaxX = max(selectMaxX, translatedPoint.x)
-        self.selectMinY = min(selectMinY, translatedPoint.y)
-    }
-    
-    private func endSelectLasso() {
-        self.selectMinX = nil
-        self.selectMaxX = nil
-        self.selectMinY = nil
+        properties.selectMinX = min(selectMinX, translatedPoint.x)
+        properties.selectMaxX = max(selectMaxX, translatedPoint.x)
+        properties.selectMinY = min(selectMinY, translatedPoint.y)
     }
 }
 
