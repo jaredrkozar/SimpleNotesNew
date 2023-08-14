@@ -44,7 +44,7 @@ struct NoteListView: View {
                    .id(UUID())
                }
            }
-
+           
            .sheet(isPresented: $showTagSheet) {
                AddTagsToNoteView(note: selectedNote ?? notes[0])
                    .presentationDetents([.large])
@@ -86,6 +86,7 @@ struct NoteListView: View {
            }
        }
        .onAppear {
+           print(notes.count)
            scope.tag = currentTag ?? ""
            scope.sortMethod = .titleAscending
        }

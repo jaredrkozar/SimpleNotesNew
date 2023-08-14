@@ -12,10 +12,14 @@ struct NoteView: View {
     @State private var showingToolOptionsMenu = false
     
     var body: some View {
-        DrawingView(properties: noteProperties)
-            .frame(maxWidth: .infinity)
-            .navigationTitle("SwiftUI")
-
+        ZStack {
+            Page(pageStyle: .grid(gridWidth: 3.0))
+            DrawingView(properties: noteProperties)
+        }
+        
+        .frame(maxWidth: 700, maxHeight: 500)
+        .navigationTitle("SwiftUI")
+        
             .toolbar {
                 ToolbarItemGroup(placement: .secondaryAction) {
                     ForEach(ToolsList.allCases, id: \.rawValue) { tool in

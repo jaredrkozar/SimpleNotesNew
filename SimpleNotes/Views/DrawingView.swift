@@ -16,17 +16,25 @@ struct DrawingView: View {
     var body: some View {
         ZStack {
             if properties.canshowSelectMenu == true && properties.draggingLasso == false {
-                    lassoMenu
-                        .position(properties.selectMenuPoint!)
-                        .allowsHitTesting(true)
+                Rectangle()
+                    .fill(.brown)
+                    .position(x: 0, y: 0)
+                    .frame(width: properties.selectMenuRect?.width, height: properties.selectMenuRect?.height, alignment: .leading)
+                
+                lassoMenu
+                    .position(properties.selectMenuPoint!)
+                    .allowsHitTesting(true)
             }
             
-            Canvas { context, size in
-                for line in lines {
-                    context.opacity = line.opacity
-                    context.stroke(line.path, with: .color(line.color), style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
-                }
-            }
+            ZStack {
+                Color("clearColor")
+                ForEach(lines, id: \.id){ line in
+                    line
+                        .stroke(line.color, style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
+                   }
+               }
+            
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         
         .simultaneousGesture(
@@ -144,6 +152,7 @@ struct DrawingView: View {
                 properties.endLasso()
             } label: {
                 Image(systemName: "trash")
+                    .imageScale(.medium)
             }
         }
         .padding(5)
@@ -161,6 +170,7 @@ struct DrawingView: View {
         }.map { _, stroke in
             return stroke
         }
+        properties.selectedLines.removeAll()
         properties.selectMenuPoint = nil
     }
     
@@ -182,11 +192,16 @@ struct DrawingView: View {
     }
 }
 
-struct Line: Equatable {
+struct Line: Equatable, Shape {
+    func path(in rect: CGRect) -> Path {
+        return path
+    }
+    
     var color: Color
     var width: CGFloat
     var opacity: Double
     var points: [CGPoint] = [CGPoint]()
+    let id = UUID()
     
     var path: Path {
         var path = Path()
@@ -301,5 +316,3 @@ public extension CGPoint{
         return CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
     }
 }
-
-

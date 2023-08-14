@@ -11,34 +11,26 @@ import SwiftUI
 protocol Tool: ObservableObject {
     var width: CGFloat { get set }
     var color: Color { get set }
-    var points: [CGPoint] { get set }
 }
 
 class Pen: Tool {
     @Published var width: CGFloat = 5.0
     @Published var color: Color = .cyan
-    @Published var points: [CGPoint] = [CGPoint]()
 }
 
 class Highlighter: Tool {
     @Published var width: CGFloat = 2.5
-    
     @Published var color: Color = .yellow
-    @Published var points: [CGPoint] = [CGPoint]()
 }
 
 class Eraser: Tool {
     @Published var width: CGFloat = 2.5
-    
     @Published var color: Color = .primary
-    @Published var points: [CGPoint] = [CGPoint]()
 }
 
 class Lasso: Tool {
     @Published var width: CGFloat = 3.0
-    
     @Published var color: Color = .blue
-    @Published var points: [CGPoint] = [CGPoint]()
 }
 
 enum ToolsList: String, CaseIterable {
