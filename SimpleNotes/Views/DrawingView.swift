@@ -30,6 +30,7 @@ struct DrawingView: View {
                 ForEach(properties.lines, id: \.id){ line in
                     line
                         .stroke(line.color, style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
+                        .opacity(line.opacity)
                    }
                }
             
@@ -49,7 +50,6 @@ struct DrawingView: View {
                                 
                                 properties.draggingLasso = true
                             } else {
-                                print("DLDLDdd")
                                 properties.endLasso()
                                 properties.lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                             }
@@ -58,7 +58,6 @@ struct DrawingView: View {
                             
                             guard value.translation != .zero else {
                                 properties.lines.removeLast()
-                                print("REMOVE")
                                 return
                             }
                             
@@ -130,7 +129,6 @@ struct DrawingView: View {
                             properties.selectMenuPoint = CGPoint(x: (selectMinX! + selectMaxX!) / 2, y: (selectMinY! - 30.0))
                         }
                         endSelectRect()
-                        print(properties.selectedLines.count)
                     }
                     
                 })
