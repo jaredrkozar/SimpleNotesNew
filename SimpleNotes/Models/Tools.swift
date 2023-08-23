@@ -85,12 +85,13 @@ class CurrentNoteProperties: ObservableObject {
     
     var selectMenuRect: CGRect? {
         guard canshowSelectMenu == true else { return CGRect(x: 0, y: 0, width: 0, height: 0) }
-        return CGRect(x: (selectMenuPoint!.x - 30), y: selectMenuPoint!.y, width: 70, height: 50)
+        return CGRect(x: (selectMenuPoint!.x - 30), y: (selectMenuPoint!.y - 30), width: 70, height: 50)
     }
     
     func endLasso() {
-        if selectedLines.count >= 1 {
+        if selectedLines.count >= 0 && selectMenuPoint != nil {
             lines.removeLast()
+            print("REMOVELNE")
         }
         selectedLines.removeAll()
         draggingLasso = false
@@ -98,7 +99,7 @@ class CurrentNoteProperties: ObservableObject {
     }
     
     var canshowSelectMenu: Bool {
-        return currentTool == .lasso && selectMenuPoint != nil && selectedLines.count > 1
+        return currentTool == .lasso && selectMenuPoint != nil && selectedLines.count > 0
     }
 }
 

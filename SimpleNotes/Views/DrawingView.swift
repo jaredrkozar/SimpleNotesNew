@@ -45,10 +45,11 @@ struct DrawingView: View {
                         if value.translation == .zero {
                             //length of line is zero -> new line
                             
-                            if properties.selectedLines.count > 1 && properties.lines[lineCount].containsPoint(test: value.startLocation) {
+                            if properties.selectedLines.count >= 1 && properties.lines[lineCount].containsPoint(test: value.startLocation) {
                                 
                                 properties.draggingLasso = true
                             } else {
+                                print("DLDLDdd")
                                 properties.endLasso()
                                 properties.lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                             }
@@ -57,6 +58,7 @@ struct DrawingView: View {
                             
                             guard value.translation != .zero else {
                                 properties.lines.removeLast()
+                                print("REMOVE")
                                 return
                             }
                             
@@ -120,7 +122,7 @@ struct DrawingView: View {
                             properties.lines[properties.lines.count - 1].points.append(value.startLocation)
                             
                             for (index, _) in properties.lines.enumerated() {
-                                if properties.lines[properties.lines.count - 1].lassoContainsLine(line: properties.lines[index]) {
+                                if properties.lines[properties.lines.count - 1].lassoContainsLine(line: properties.lines[index]) && index != properties.lines.count - 1 {
                                     properties.selectedLines.append(index)
                                 }
                             }
@@ -128,6 +130,7 @@ struct DrawingView: View {
                             properties.selectMenuPoint = CGPoint(x: (selectMinX! + selectMaxX!) / 2, y: (selectMinY! - 30.0))
                         }
                         endSelectRect()
+                        print(properties.selectedLines.count)
                     }
                     
                 })
@@ -345,23 +348,6 @@ struct ChangeStrokesView: View {
     
     var body: some View {
         
-        List {
-            Section(header: Text("Width")) {
-                CustomSlider(options:  [2.5, 5, 7.5, 10.0, 15, 20.0], selected: $newSelectedWidth, color: $newSelectedColor)
-            }
-            
-            if properties.currentTool != .eraser {
-                Section(header: Text("Color")) {
-                    ColorPickerCell(currentValue: $newSelectedColor)
-                }
-            }
-           
-        }
-        .onChange(of: newSelectedColor) { newValue in
-            
-            for (index, _) in properties.selectedLines.enumerated() {
-                print(index)
-            }
-        }
+        Text("{DLDLDD}")
     }
 }
