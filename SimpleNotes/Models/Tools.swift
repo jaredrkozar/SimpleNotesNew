@@ -91,8 +91,8 @@ class CurrentNoteProperties: ObservableObject {
     func endLasso() {
         if selectedLines.count >= 0 && selectMenuPoint != nil {
             lines.removeLast()
-            print("REMOVELNE")
         }
+        
         selectedLines.removeAll()
         draggingLasso = false
         selectMenuPoint = nil

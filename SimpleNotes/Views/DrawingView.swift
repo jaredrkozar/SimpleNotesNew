@@ -109,7 +109,7 @@ struct DrawingView: View {
                         
                     }})
                 .onEnded({ value in
-                    guard value.translation != .zero else {
+                    guard value.translation != .zero || properties.canshowSelectMenu == true else {
                         properties.lines.removeLast()
                         return
                     }
@@ -348,6 +348,17 @@ struct ChangeStrokesView: View {
     
     var body: some View {
         
-        Text("{DLDLDD}")
+        ToolOptionsMenuModifier(toolWidth: $newSelectedWidth, toolColor: $newSelectedColor, isEraser: false)
+        
+            .onChange(of: newSelectedWidth) { newValue in
+                for (index, _) in properties.selectedLines.enumerated() {
+                    properties.lines[index].width = newValue
+                }
+            }
+            .onChange(of: newSelectedColor) { newValue in
+                for (index, _) in properties.selectedLines.enumerated() {
+                    properties.lines[index].color = newValue
+                }
+            }
     }
 }
