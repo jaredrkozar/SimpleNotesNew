@@ -72,33 +72,29 @@ class CurrentNoteProperties: ObservableObject {
             return newTool ?? pen;
         }
         set {
-            removeLasso = true
             endLasso()
             self.newTool = newValue
         }
     }
     
+    @Published var lines = [Line]()
     @Published var selectMenuPoint: CGPoint?
     var selectedLines: [Int] = [Int]()
     
-    var removeLasso: Bool?
     var draggingLasso: Bool?
-    var selectMinX: CGFloat?
-    var selectMaxX: CGFloat?
-    var selectMinY: CGFloat?
     
     var selectMenuRect: CGRect? {
         guard canshowSelectMenu == true else { return CGRect(x: 0, y: 0, width: 0, height: 0) }
-        return CGRect(x: (selectMenuPoint!.x), y: (selectMenuPoint!.y), width: 150, height: 100)
+        return CGRect(x: (selectMenuPoint!.x - 30), y: selectMenuPoint!.y, width: 70, height: 50)
     }
     
     func endLasso() {
+        if selectedLines.count >= 1 {
+            lines.removeLast()
+        }
+        selectedLines.removeAll()
         draggingLasso = false
-        removeLasso = false
         selectMenuPoint = nil
-        selectMinX = nil
-        selectMinX = nil
-        selectMaxX = nil
     }
     
     var canshowSelectMenu: Bool {

@@ -9,18 +9,17 @@ import Foundation
 import SwiftUI
 
 struct DrawingView: View {
-    @State private var lines: [Line] = [Line]()
     @ObservedObject var properties: CurrentNoteProperties
     @State private var currentPoint: CGPoint? = .zero
+    @State private var showChangeLineProprtiesMenu: Bool = false
+    
+    @State var selectMinX: CGFloat?
+    @State var selectMaxX: CGFloat?
+    @State var selectMinY: CGFloat?
     
     var body: some View {
         ZStack {
             if properties.canshowSelectMenu == true && properties.draggingLasso == false {
-                Rectangle()
-                    .fill(.brown)
-                    .position(x: 0, y: 0)
-                    .frame(width: properties.selectMenuRect?.width, height: properties.selectMenuRect?.height, alignment: .leading)
-                
                 lassoMenu
                     .position(properties.selectMenuPoint!)
                     .allowsHitTesting(true)
@@ -28,7 +27,7 @@ struct DrawingView: View {
             
             ZStack {
                 Color("clearColor")
-                ForEach(lines, id: \.id){ line in
+                ForEach(properties.lines, id: \.id){ line in
                     line
                         .stroke(line.color, style: StrokeStyle(lineWidth: line.width, lineCap: .round, lineJoin: .round))
                    }
@@ -40,30 +39,24 @@ struct DrawingView: View {
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged({ value in
-                    if properties.currentTool != .scoll && (properties.selectMenuRect?.contains(value.startLocation) == false)
+                    let lineCount = properties.lines.count - 1
+                    if properties.currentTool != .scoll && properties.selectMenuRect?.contains(value.startLocation) == false
                     {
                         if value.translation == .zero {
                             //length of line is zero -> new line
                             
-                            if properties.selectedLines.count > 1 && lines[lines.count - 1].containsPoint(test: value.startLocation) {
+                            if properties.selectedLines.count > 1 && properties.lines[lineCount].containsPoint(test: value.startLocation) {
                                 
                                 properties.draggingLasso = true
                             } else {
-                                if properties.removeLasso == true {
-                                    properties.endLasso()
-                                    properties.selectedLines.removeAll()
-                                    if lines.count > 0 {
-                                        lines.removeLast()
-                                    }
-                                }
-                                
-                                lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
+                                properties.endLasso()
+                                properties.lines.append(Line(color: properties.toolProperties.color, width: properties.toolProperties.width, opacity: properties.currentTool != .highlighter ? 1.0 : 0.6, points: [value.location]))
                             }
                         } else {
                             //the user is currently moving their finger
                             
                             guard value.translation != .zero else {
-                                lines.removeLast()
+                                properties.lines.removeLast()
                                 return
                             }
                             
@@ -84,26 +77,25 @@ struct DrawingView: View {
                                 
                                 for (index, _) in properties.selectedLines.enumerated() {
                                     
-                                    lines[index].translate(vector: vector)
+                                    properties.lines[index].translate(vector: vector)
                                 }
-                                properties.selectMinX = properties.selectMinX! + differenceX
-                                properties.selectMinY = properties.selectMinY! + differenceY
-                                properties.selectMaxX = properties.selectMaxX! + differenceX
+                                properties.selectMenuPoint = CGPoint(x: properties.selectMenuPoint!.x + differenceX, y: properties.selectMenuPoint!.y + differenceY)
                                 
                                 currentPoint = value.location
                                 
                             } else {
-                                guard let lastIndex = lines.indices.last else { return }
+                                guard let lastIndex = properties.lines.indices.last else { return }
                                 
-                                lines[lastIndex].points.append(value.location)
+                                properties.lines[lastIndex].points.append(value.location)
                                 
                                 if properties.currentTool == .eraser {
                                     
-                                    for (index, _) in lines.enumerated() {
-                                        
-                                        if lines[lines.count - 1].intersects(line: lines[index]) {
+                                    for (index, _) in properties.lines.enumerated() {
+                                    
+                                        if
+                                            properties.lines[properties.lines.count - 1].intersects(line: properties.lines[index]) && index != properties.lines.count - 1 {
                                             properties.selectedLines.append(index)
-                                            lines[index].opacity = 0.5
+                                            properties.lines[index].opacity = 0.5
                                         }
                                     }
                                     
@@ -116,42 +108,52 @@ struct DrawingView: View {
                     }})
                 .onEnded({ value in
                     guard value.translation != .zero else {
-                        lines.removeLast()
+                        properties.lines.removeLast()
                         return
                     }
                     
                     if properties.currentTool == .eraser {
-                        lines.removeLast()
+                        properties.lines.removeLast()
                         removeAllInteractedLines()
                     } else if properties.currentTool == .lasso {
                         if properties.selectedLines.count == 0 {
-                            lines[lines.count - 1].points.append(value.startLocation)
+                            properties.lines[properties.lines.count - 1].points.append(value.startLocation)
                             
-                            for (index, _) in lines.enumerated() {
-                                if lines[lines.count - 1].lassoContainsLine(line: lines[index]) {
+                            for (index, _) in properties.lines.enumerated() {
+                                if properties.lines[properties.lines.count - 1].lassoContainsLine(line: properties.lines[index]) {
                                     properties.selectedLines.append(index)
                                 }
                             }
+                            
+                            properties.selectMenuPoint = CGPoint(x: (selectMinX! + selectMaxX!) / 2, y: (selectMinY! - 30.0))
                         }
-                        properties.draggingLasso = false
-                        
-                        properties.selectMenuPoint = CGPoint(x: (properties.selectMinX! + properties.selectMaxX!) / 2, y: (properties.selectMinY! - 30.0))
-                
-                        properties.removeLasso = true
+                        endSelectRect()
                     }
                     
                 })
         )
+        .sheet(isPresented: $showChangeLineProprtiesMenu) {
+            ChangeStrokesView(properties: properties, newSelectedColor: .blue)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.automatic)
+        }
     }
     
     var lassoMenu: some View {
         HStack {
             Button {
-                lines.removeLast()
+                properties.lines.removeLast()
                 removeAllInteractedLines()
                 properties.endLasso()
             } label: {
                 Image(systemName: "trash")
+                    .imageScale(.medium)
+            }
+            
+            Button {
+                showChangeLineProprtiesMenu = true
+            } label: {
+                Image(systemName: "pin")
                     .imageScale(.medium)
             }
         }
@@ -164,8 +166,19 @@ struct DrawingView: View {
         .allowsHitTesting(true)
     }
     
+    var lassoMenuBG: some View {
+        Rectangle()
+        .padding(5)
+        .zIndex(2.0)
+        .background(.brown)
+        .foregroundColor(.white)
+        .cornerRadius(6.0)
+        .frame(width: 50)
+        .allowsHitTesting(true)
+    }
+    
     func removeAllInteractedLines() {
-        lines = lines.enumerated().filter { index, stroke in
+        properties.lines = properties.lines.enumerated().filter { index, stroke in
             !properties.selectedLines.contains(index)
         }.map { _, stroke in
             return stroke
@@ -177,18 +190,25 @@ struct DrawingView: View {
     private func updateSelectRect(_ translatedPoint: CGPoint) {
         
         guard translatedPoint.y != 0.0 else { return }
-        guard let selectMinX = properties.selectMinX,
-              let selectMaxX = properties.selectMaxX,
-              let selectMinY = properties.selectMinY else {
-            properties.selectMinX = translatedPoint.x
-            properties.selectMaxX = translatedPoint.x
-            properties.selectMinY = translatedPoint.y
+        guard let updatedMinX = selectMinX,
+              let updateMaxX = selectMaxX,
+              let updateMinY = selectMinY else {
+            selectMinX = translatedPoint.x
+            selectMaxX = translatedPoint.x
+            selectMinY = translatedPoint.y
             return
         }
         
-        properties.selectMinX = min(selectMinX, translatedPoint.x)
-        properties.selectMaxX = max(selectMaxX, translatedPoint.x)
-        properties.selectMinY = min(selectMinY, translatedPoint.y)
+        selectMinX = min(updatedMinX, translatedPoint.x)
+        selectMaxX = max(updateMaxX, translatedPoint.x)
+        selectMinY = min(updateMinY, translatedPoint.y)
+    }
+    
+    private func endSelectRect() {
+        
+        selectMinX = nil
+        selectMaxX = nil
+        selectMinY = nil
     }
 }
 
@@ -314,5 +334,34 @@ public extension CGPoint{
     
     static func + (lhs: CGPoint, rhs: CGVector) -> CGPoint {
         return CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
+    }
+}
+
+struct ChangeStrokesView: View {
+    
+    @ObservedObject var properties: CurrentNoteProperties
+    @State var newSelectedColor: Color = .green
+    @State var newSelectedWidth: CGFloat = 2.5
+    
+    var body: some View {
+        
+        List {
+            Section(header: Text("Width")) {
+                CustomSlider(options:  [2.5, 5, 7.5, 10.0, 15, 20.0], selected: $newSelectedWidth, color: $newSelectedColor)
+            }
+            
+            if properties.currentTool != .eraser {
+                Section(header: Text("Color")) {
+                    ColorPickerCell(currentValue: $newSelectedColor)
+                }
+            }
+           
+        }
+        .onChange(of: newSelectedColor) { newValue in
+            
+            for (index, _) in properties.selectedLines.enumerated() {
+                print(index)
+            }
+        }
     }
 }

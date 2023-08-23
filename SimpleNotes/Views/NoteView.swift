@@ -13,12 +13,13 @@ struct NoteView: View {
     
     var body: some View {
         ZStack {
-            Page(pageStyle: .grid(gridWidth: 3.0))
-            DrawingView(properties: noteProperties)
+            ZoomableScrollView {
+                DrawingView(properties: noteProperties)
+            }
         }
         
         .frame(maxWidth: 700, maxHeight: 500)
-        .navigationTitle("SwiftUI")
+        
         
             .toolbar {
                 ToolbarItemGroup(placement: .secondaryAction) {
